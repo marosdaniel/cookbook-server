@@ -1,0 +1,23 @@
+type Recipe {
+  id: ID!
+  title: String!
+  description: String!
+  createdAt: String!
+  createdBy: String!
+}
+
+input RecipeInput {
+  title: String!
+  description: String!
+  createdAt: String
+  createdBy: String!
+}
+
+type Query {
+  recipe(id: ID!): Recipe!
+  getRecipes(limit: Int, offset: Int): [Recipe]
+}
+
+type Mutation {
+  createRecipe(recipeInput: RecipeInput): Recipe!
+}
