@@ -1,15 +1,12 @@
-import { buildSchema, printSchema } from 'graphql';
 import dotenv from 'dotenv';
 import colors from 'colors';
 import mongoose from 'mongoose';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
-import { buildSubgraphSchema } from '@apollo/subgraph';
-import mergedTypeDefs from './server/graphql/schema/index.js';
+import { loadSchema } from '@graphql-tools/load';
+
 import resolvers from './server/graphql/resolvers/index.js';
-import { makeExecutableSchema } from '@graphql-tools/schema';
-import { loadSchemaSync, loadSchema } from '@graphql-tools/load';
 
 dotenv.config();
 
@@ -20,12 +17,9 @@ const schema = await loadSchema('server/graphql/**/*.graphql', {
 });
 
 const server = new ApolloServer({
-  schema,
+  typeDefs: schema,
   resolvers,
 });
-
-console.log(printSchema(schema));
-console.log(resolvers);
 
 mongoose
   .connect(MONGO_DB, {

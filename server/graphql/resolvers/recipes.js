@@ -8,7 +8,6 @@ const recipeResolvers = {
     // a limit lekérdezés eredményének maximális számát állítja
     // .skip(offset) metódus a lekérdezés eredményének elhagyandó elemeinek számát állítja be a offset paraméter alapján.
     async getRecipes(_, { limit, offset }) {
-      // return await Recipe.find().limit(limit).skip(offset).sort({ createdAt: -1 });
       return await Recipe.find().sort({ createdAt: -1 }).limit(limit);
     },
   },
