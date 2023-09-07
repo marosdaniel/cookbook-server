@@ -30,7 +30,7 @@ const messageResolvers = {
       // };
 
       return {
-        ...res._doc,
+        ...res,
         id: res.id,
       };
     },

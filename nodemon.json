@@ -1,3 +1,4 @@
 {
-  "ext": "js, mjs, cjs, json, graphql"
+  "ext": "ts, js, mjs, cjs, json, graphql",
+  "ignore": ["**/node_modules/**", "**/dist/**"]
 }

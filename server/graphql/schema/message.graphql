@@ -2,6 +2,7 @@ type Message {
   text: String
   createdAt: String
   createdBy: String
+  id: ID
 }
 
 input MessageInput {

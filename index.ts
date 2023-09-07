@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import colors from 'colors';
 import mongoose from 'mongoose';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
@@ -11,6 +10,7 @@ import resolvers from './server/graphql/resolvers/index.js';
 dotenv.config();
 
 const MONGO_DB = process.env.MONGO_URI;
+const PORT: number = +process.env.PORT || 8080;
 
 const schema = await loadSchema('server/graphql/**/*.graphql', {
   loaders: [new GraphQLFileLoader()],
@@ -22,16 +22,14 @@ const server = new ApolloServer({
 });
 
 mongoose
-  .connect(MONGO_DB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(MONGO_DB)
+
   .then(() => {
-    console.log('Connected to MongoDB..'.magenta.bold);
+    console.log('Connected to MongoDB...');
     return startStandaloneServer(server, {
-      listen: { port: process.env.PORT || 8080 },
+      listen: { port: PORT },
     });
   })
   .then(server => {
-    console.log(`🚀  Server ready at: ${server.url}`.bgMagenta.bold);
+    console.log(`🚀  Server ready at: ${server.url}`);
   });
