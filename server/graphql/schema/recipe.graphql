@@ -1,23 +1,31 @@
 type Recipe {
-  id: ID!
+  _id: ID!
   title: String!
   description: String!
   createdAt: String!
+  updatedAt: String!
   createdBy: String!
 }
 
 input RecipeInput {
   title: String!
   description: String!
-  createdAt: String
   createdBy: String!
 }
 
+input RecipeEditInput {
+  title: String!
+  description: String!
+}
+
 type Query {
-  recipe(id: ID!): Recipe!
-  getRecipes(limit: Int, offset: Int): [Recipe]
+  recipe(_id: ID!): Recipe!
+  getRecipes(limit: Int): [Recipe]
 }
 
 type Mutation {
   createRecipe(recipeInput: RecipeInput): Recipe!
+  deleteRecipe(id: ID!): Boolean! # true if  something was deleted, false if the id was not found or deleted
+  deleteAllRecipes: Int! # number of deleted recipes
+  editRecipe(id: ID!, recipeEditInput: RecipeEditInput): Recipe!
 }
