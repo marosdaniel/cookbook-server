@@ -5,7 +5,7 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { loadSchema } from '@graphql-tools/load';
 
-import resolvers from './server/graphql/resolvers/index';
+import resolvers from './server/graphql/resolvers';
 
 dotenv.config();
 
