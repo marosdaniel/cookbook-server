@@ -3,10 +3,10 @@ import { Message } from '../models/Message.js';
 const messageResolvers = {
   Query: {
     messages: async (_, { id }) => {
-      console.log('1111232323');
       const message = await Message.findById(id);
       return message;
     },
+    // simple example for testing
     me: () => {
       console.log('me query executed');
       return 'asdasdasdasd';
