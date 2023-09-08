@@ -2,28 +2,49 @@ import { Recipe } from '../models';
 
 const recipeResolvers = {
   Query: {
-    async recipe(_, { id }) {
-      return await Recipe.findById(id);
+    async getRecipeById(_, { id }: { id: string }) {
+      const recipe = await Recipe.findById(id);
+      if (!recipe) {
+        throw new Error('Recipe not found');
+      }
+      return recipe;
     },
-    async getRecipes(_, { limit }) {
-      return await Recipe.find().sort({ createdAt: -1 }).limit(limit);
+    async getRecipes(_, { limit }: { limit: number }) {
+      const recipes = await Recipe.find().sort({ createdAt: -1 }).limit(limit);
+      if (!recipes) {
+        throw new Error('Recipes not found');
+      }
+      return recipes;
+    },
+    async getRecipesByTitle(_, { title, limit }: { title: string; limit: number }) {
+      const recipes = await Recipe.find({ title: { $regex: new RegExp(title, 'i') } })
+        .sort({ createdAt: -1 })
+        .limit(limit); // i for case-insensitive
+      if (!recipes || recipes.length === 0) {
+        throw new Error('Recipes not found');
+      }
+      return recipes;
     },
   },
   Mutation: {
     async createRecipe(_, { recipeInput: { title, description, createdBy } }) {
-      const newDate = new Date().toISOString();
-      const newRecipe = new Recipe({
-        title,
-        description,
-        createdBy,
-        createdAt: newDate,
-        updatedAt: newDate,
-      });
-      const res = await newRecipe.save();
-      return {
-        ...res.toObject(),
-        id: res.id,
-      };
+      try {
+        const newDate = new Date().toISOString();
+        const newRecipe = new Recipe({
+          title,
+          description,
+          createdBy,
+          createdAt: newDate,
+          updatedAt: newDate,
+        });
+        const res = await newRecipe.save();
+        return res;
+      } catch (error) {
+        // Handle the error here
+        // For example, you can log it or throw a custom error
+        console.error('Error creating recipe:', error);
+        throw new Error('Could not create recipe');
+      }
     },
     async editRecipe(_, { id, recipeEditInput: { title, description } }) {
       const res = await Recipe.findByIdAndUpdate(

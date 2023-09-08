@@ -5,6 +5,7 @@ type Recipe {
   createdAt: String!
   updatedAt: String!
   createdBy: String!
+  authorId: ID! # ID of the user who created the recipe
 }
 
 input RecipeInput {
@@ -19,8 +20,9 @@ input RecipeEditInput {
 }
 
 type Query {
-  recipe(_id: ID!): Recipe!
+  getRecipeById(_id: ID!): Recipe!
   getRecipes(limit: Int): [Recipe]
+  getRecipesByTitle(title: String!, limit: Int): [Recipe]
 }
 
 type Mutation {

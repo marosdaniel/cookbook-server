@@ -33,3 +33,9 @@ mongoose
   .then(server => {
     console.log(`🚀  Server ready at: ${server.url}`);
   });
+
+//   const typeDefs = gql`
+//   type Query {
+//     hello: String
+//   }
+// `;

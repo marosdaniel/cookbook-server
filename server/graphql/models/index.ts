@@ -1,4 +1,5 @@
 import { Recipe } from './Recipe';
 import { Message } from './Message';
+import { User } from './User';
 
-export { Recipe, Message };
+export { Recipe, Message, User };
