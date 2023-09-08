@@ -53,6 +53,7 @@ const userResolvers = {
           email,
           password,
           createdAt: newDate,
+          locale: 'en-GB',
         });
         const res = await newUser.save();
         return res;

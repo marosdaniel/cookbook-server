@@ -7,6 +7,7 @@ type User {
   password: String!
   recipes: [Recipe]!
   favoriteRecipes: [Recipe]!
+  locale: String!
 }
 
 input UserCreateInput {
