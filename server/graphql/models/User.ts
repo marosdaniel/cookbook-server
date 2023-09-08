@@ -10,6 +10,7 @@ const userSchema = new Schema({
   createdAt: String,
   recipes: [{ type: Schema.Types.ObjectId, ref: 'Recipe' }],
   favoriteRecipes: [{ type: Schema.Types.ObjectId, ref: 'Recipe' }],
+  locale: String,
 });
 
 export const User = model('User', userSchema);

@@ -8,15 +8,15 @@ type Recipe {
   authorId: ID! # ID of the user who created the recipe
 }
 
-input RecipeInput {
+input RecipeCreateInput {
   title: String!
   description: String!
   createdBy: String!
 }
 
 input RecipeEditInput {
-  title: String!
-  description: String!
+  title: String
+  description: String
 }
 
 type Query {
@@ -26,7 +26,7 @@ type Query {
 }
 
 type Mutation {
-  createRecipe(recipeInput: RecipeInput): Recipe!
+  createRecipe(recipeCreateInput: RecipeCreateInput): Recipe!
   deleteRecipe(id: ID!): Boolean! # true if  something was deleted, false if the id was not found or deleted
   deleteAllRecipes: Int! # number of deleted recipes
   editRecipe(id: ID!, recipeEditInput: RecipeEditInput): Recipe!

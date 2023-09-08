@@ -19,7 +19,7 @@ const recipeResolvers = {
     async getRecipesByTitle(_, { title, limit }: { title: string; limit: number }) {
       const recipes = await Recipe.find({ title: { $regex: new RegExp(title, 'i') } })
         .sort({ createdAt: -1 })
-        .limit(limit); // i for case-insensitive
+        .limit(limit);
       if (!recipes || recipes.length === 0) {
         throw new Error('Recipes not found');
       }
@@ -40,9 +40,6 @@ const recipeResolvers = {
         const res = await newRecipe.save();
         return res;
       } catch (error) {
-        // Handle the error here
-        // For example, you can log it or throw a custom error
-        console.error('Error creating recipe:', error);
         throw new Error('Could not create recipe');
       }
     },
