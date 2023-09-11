@@ -27,7 +27,7 @@ const recipeResolvers = {
     },
   },
   Mutation: {
-    async createRecipe(_, { recipeInput: { title, description, createdBy } }) {
+    async createRecipe(_, { recipeCreateInput: { title, description, createdBy } }) {
       try {
         const newDate = new Date().toISOString();
         const newRecipe = new Recipe({
