@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import throwCustomError, { ErrorTypes } from '../../helpers/error-handler.helper';
 import { User } from '../models';
 
 const userResolvers = {
@@ -7,14 +8,14 @@ const userResolvers = {
     async getUserById(_, { id }: { id: string }) {
       const user = await User.findById(id);
       if (!user) {
-        throw new Error('User not found');
+        throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
       }
       return user;
     },
     async getAllUser(_, { limit }: { limit: number }) {
       const users = await User.find().sort({ createdAt: -1 }).limit(limit);
       if (!users || users.length === 0) {
-        throw new Error('Users not found');
+        throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
       }
       return users;
     },
@@ -67,21 +68,18 @@ const userResolvers = {
       }
     },
     async loginUser(_, { userLoginInput: { userNameOrEmail, password } }) {
-      // Ellenőrizd, hogy a felhasználó létezik
       const user = await User.findOne({ $or: [{ userName: userNameOrEmail }, { email: userNameOrEmail }] });
 
       if (!user) {
-        throw new Error('Invalid credentials');
+        throwCustomError('Invalid user', ErrorTypes.UNAUTHENTICATED);
       }
 
-      // Ellenőrizd a jelszót
       const validPassword = await bcrypt.compare(password, user.password);
 
       if (!validPassword) {
-        throw new Error('Invalid credentials');
+        throwCustomError('Invalid password', ErrorTypes.UNAUTHENTICATED);
       }
 
-      // Ha minden rendben van, generálj egy token-t
       const token = jwt.sign({ userId: user.id }, process.env.JWT_PRIVATE_KEY, { expiresIn: '30d' });
 
       return {
@@ -94,7 +92,7 @@ const userResolvers = {
         const user = await User.findById(id);
 
         if (!user) {
-          throw new Error('User not found');
+          throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
         }
 
         Object.assign(user, userEditInput);
@@ -105,13 +103,13 @@ const userResolvers = {
         return user;
       } catch (error) {
         console.error('Error while editing user:', error);
-        throw new Error('Could not edit user');
+        throwCustomError('Could not edit user', ErrorTypes.UNAUTHENTICATED);
       }
     },
     async deleteUser(_, { id }) {
       const wasDeleted = await User.deleteOne({ _id: id });
       if (!wasDeleted) {
-        throw new Error('User not found');
+        throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
       }
       return wasDeleted.deletedCount; // 1 if deleted, 0 if not
     },
