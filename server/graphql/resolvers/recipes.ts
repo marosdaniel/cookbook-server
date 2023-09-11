@@ -2,8 +2,8 @@ import { Recipe } from '../models';
 
 const recipeResolvers = {
   Query: {
-    async getRecipeById(_, { id }: { id: string }) {
-      const recipe = await Recipe.findById(id);
+    async getRecipeById(_, { _id }: { _id: string }) {
+      const recipe = await Recipe.findById(_id);
       if (!recipe) {
         throw new Error('Recipe not found');
       }

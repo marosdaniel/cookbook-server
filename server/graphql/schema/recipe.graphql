@@ -21,8 +21,8 @@ input RecipeEditInput {
 
 type Query {
   getRecipeById(_id: ID!): Recipe!
-  getRecipes(limit: Int): [Recipe]
-  getRecipesByTitle(title: String!, limit: Int): [Recipe]
+  getRecipes(limit: Int): [Recipe]!
+  getRecipesByTitle(title: String!, limit: Int): [Recipe]!
 }
 
 type Mutation {
