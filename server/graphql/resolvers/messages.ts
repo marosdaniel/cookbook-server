@@ -6,9 +6,7 @@ const messageResolvers = {
       const message = await Message.findById(id);
       return message;
     },
-    // simple example for testing
     me: () => {
-      console.log('me query executed');
       return 'asdasdasdasd';
     },
   },

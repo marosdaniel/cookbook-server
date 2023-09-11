@@ -1,9 +1,9 @@
-import dotenv from 'dotenv';
-import mongoose from 'mongoose';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { loadSchema } from '@graphql-tools/load';
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
 
 import context from './server/context';
 
@@ -28,7 +28,7 @@ mongoose
   .then(() => {
     console.log('Connected to MongoDB...');
     return startStandaloneServer(server, {
-      // context,
+      context,
       listen: { port: PORT },
     });
   })

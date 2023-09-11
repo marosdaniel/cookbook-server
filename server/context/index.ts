@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
+import { parse } from 'graphql';
 import throwCustomError, { ErrorTypes } from '../helpers/error-handler.helper';
+import operationsConfig from './operationsConfig';
 
 const getUser = async token => {
   try {
@@ -14,20 +16,29 @@ const getUser = async token => {
 };
 
 const context = async ({ req, res }) => {
-  //   console.log(req.body.operationName);
-  if (req.body.operationName === 'IntrospectionQuery') {
-    // console.log('blocking introspection query..');
-    return {};
-  }
-  // allowing the 'CreateUser' and 'Login' queries to pass without giving the token
-  if (req.body.operationName === 'CreateUser' || req.body.operationName === 'Login') {
+  const firstOperationDefinition = ast => ast.definitions[0];
+  const firstFieldValueNameFromOperation = operationDefinition =>
+    operationDefinition.selectionSet.selections[0].name.value;
+  const { operationName } = req.body;
+  const query = req.body.query;
+  const parsedQuery = parse(query);
+
+  const operationDefinition = firstFieldValueNameFromOperation(firstOperationDefinition(parsedQuery));
+
+  // do not remove this, it is needed for the introspection query to work
+  if (operationName === 'IntrospectionQuery') {
     return {};
   }
 
-  // get the user token from the headers
+  const userTokenNotRequired = operationsConfig.publicOperations.includes(operationDefinition);
+  // const userTokenRequired = operationsConfig.authenticatedOperations.includes(operationName);
+
+  if (userTokenNotRequired) {
+    return {};
+  }
+
   const token = req.headers.authorization || '';
 
-  // try to retrieve a user with the token
   const user = await getUser(token);
 
   if (!user) {
