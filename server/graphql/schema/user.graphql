@@ -25,14 +25,25 @@ input UserEditInput {
   locale: String
 }
 
+input UserLoginInput {
+  userNameOrEmail: String!
+  password: String!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
+
 type Query {
   getUserById(id: ID!): User!
   getAllUser: [User]!
 }
 
 type Mutation {
+  loginUser(userLoginInput: UserLoginInput!): AuthPayload!
   createUser(userCreateInput: UserCreateInput): User!
   editUser(id: ID!, userEditInput: UserEditInput!): User!
   deleteUser(id: ID!): Boolean!
-  deleteAllUser: [User]!
+  deleteAllUser: Int!
 }

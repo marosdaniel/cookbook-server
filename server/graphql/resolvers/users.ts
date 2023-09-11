@@ -1,3 +1,5 @@
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { User } from '../models';
 
 const userResolvers = {
@@ -54,6 +56,8 @@ const userResolvers = {
           password,
           createdAt: newDate,
           locale: 'en-GB',
+          recipes: [],
+          favoriteRecipes: [],
         });
         const res = await newUser.save();
         return res;
@@ -62,17 +66,48 @@ const userResolvers = {
         throw new Error('Could not create user');
       }
     },
-    // async editRecipe(_, { id, recipeEditInput: { title, description } }) {
-    //   const res = await Recipe.findByIdAndUpdate(
-    //     id,
-    //     { title, description, updatedAt: new Date().toISOString() },
-    //     { new: true },
-    //   );
-    //   if (!res) {
-    //     throw new Error('Recipe not found');
-    //   }
-    //   return res.toObject();
-    // },
+    async loginUser(_, { userLoginInput: { userNameOrEmail, password } }) {
+      // Ellenőrizd, hogy a felhasználó létezik
+      const user = await User.findOne({ $or: [{ userName: userNameOrEmail }, { email: userNameOrEmail }] });
+
+      if (!user) {
+        throw new Error('Invalid credentials');
+      }
+
+      // Ellenőrizd a jelszót
+      const validPassword = await bcrypt.compare(password, user.password);
+
+      if (!validPassword) {
+        throw new Error('Invalid credentials');
+      }
+
+      // Ha minden rendben van, generálj egy token-t
+      const token = jwt.sign({ userId: user.id }, process.env.JWT_PRIVATE_KEY, { expiresIn: '30d' });
+
+      return {
+        token,
+        user,
+      };
+    },
+    async editUser(_, { id, userEditInput }) {
+      try {
+        const user = await User.findById(id);
+
+        if (!user) {
+          throw new Error('User not found');
+        }
+
+        Object.assign(user, userEditInput);
+
+        // mongoose pre-save hook will hash the password if it was changed
+        await user.save();
+
+        return user;
+      } catch (error) {
+        console.error('Error while editing user:', error);
+        throw new Error('Could not edit user');
+      }
+    },
     async deleteUser(_, { id }) {
       const wasDeleted = await User.deleteOne({ _id: id });
       if (!wasDeleted) {

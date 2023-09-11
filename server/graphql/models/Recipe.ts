@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose';
+import { User } from './User';
 
 // not sure if it is necessary to define the interface
 interface IRecipe {
