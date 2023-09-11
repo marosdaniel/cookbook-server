@@ -1,0 +1,38 @@
+type User {
+  _id: ID!
+  firstName: String!
+  lastName: String!
+  userName: String!
+  email: String!
+  password: String!
+  recipes: [Recipe]!
+  favoriteRecipes: [Recipe]!
+  locale: String!
+}
+
+input UserCreateInput {
+  firstName: String!
+  lastName: String!
+  userName: String!
+  email: String!
+  password: String!
+}
+
+input UserEditInput {
+  firstName: String
+  lastName: String
+  password: String
+  locale: String
+}
+
+type Query {
+  getUserById(id: ID!): User!
+  getAllUser: [User]!
+}
+
+type Mutation {
+  createUser(userCreateInput: UserCreateInput): User!
+  editUser(id: ID!, userEditInput: UserEditInput!): User!
+  deleteUser(id: ID!): Boolean!
+  deleteAllUser: [User]!
+}

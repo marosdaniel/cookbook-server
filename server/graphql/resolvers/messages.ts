@@ -1,4 +1,4 @@
-import { Message } from '../models/Message.js';
+import { Message } from '../models/';
 
 const messageResolvers = {
   Query: {
@@ -21,16 +21,8 @@ const messageResolvers = {
       });
 
       const res = await newMessage.save();
-
-      // return {
-      //   id: '123',
-      //   text: 'text',
-      //   createdAt: 'createdAt',
-      //   createdBy: 'createdBy',
-      // };
-
       return {
-        ...res,
+        ...res.toObject(),
         id: res.id,
       };
     },

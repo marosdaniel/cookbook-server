@@ -23,10 +23,10 @@ const server = new ApolloServer({
 
 mongoose
   .connect(MONGO_DB)
-
   .then(() => {
     console.log('Connected to MongoDB...');
     return startStandaloneServer(server, {
+      context: async ({ req }) => ({ token: req.headers.token }),
       listen: { port: PORT },
     });
   })

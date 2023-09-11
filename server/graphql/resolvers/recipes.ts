@@ -1,42 +1,69 @@
-import { Recipe } from '../models/Recipe.js';
+import { Recipe } from '../models';
 
 const recipeResolvers = {
   Query: {
-    async recipe(_, { id }) {
-      return await Recipe.findById(id);
+    async getRecipeById(_, { _id }: { _id: string }) {
+      const recipe = await Recipe.findById(_id);
+      if (!recipe) {
+        throw new Error('Recipe not found');
+      }
+      return recipe;
     },
-    // a limit lekérdezés eredményének maximális számát állítja
-    // .skip(offset) metódus a lekérdezés eredményének elhagyandó elemeinek számát állítja be a offset paraméter alapján.
-    async getRecipes(_, { limit, offset }) {
-      return await Recipe.find().sort({ createdAt: -1 }).limit(limit);
+    async getRecipes(_, { limit }: { limit: number }) {
+      const recipes = await Recipe.find().sort({ createdAt: -1 }).limit(limit);
+      if (!recipes) {
+        throw new Error('Recipes not found');
+      }
+      return recipes;
+    },
+    async getRecipesByTitle(_, { title, limit }: { title: string; limit: number }) {
+      const recipes = await Recipe.find({ title: { $regex: new RegExp(title, 'i') } })
+        .sort({ createdAt: -1 })
+        .limit(limit);
+      if (!recipes || recipes.length === 0) {
+        throw new Error('Recipes not found');
+      }
+      return recipes;
     },
   },
   Mutation: {
-    // createMessage: async (_, { messageInput: { text, username } }) => {
-    //   const newMessage = new Message({
-    //     text: text,
-    //     createdAt: new Date().toISOString(),
-    //     createdBy: username,
-    //   });
-    //   const res = await newMessage.save();
-    //   console.log(res);
-    //   return {
-    //     ...res._doc,
-    //     id: res.id,
-    //   };
-    // },
-    async createRecipe(_, { recipeInput: { title, description, createdBy } }) {
-      const newRecipe = new Recipe({
-        title,
-        description,
-        createdAt: new Date().toISOString(),
-        createdBy: createdBy,
-      });
-      const res = await newRecipe.save();
-      return {
-        ...res.toObject(),
-        id: res.id,
-      };
+    async createRecipe(_, { recipeCreateInput: { title, description, createdBy } }) {
+      try {
+        const newDate = new Date().toISOString();
+        const newRecipe = new Recipe({
+          title,
+          description,
+          createdBy,
+          createdAt: newDate,
+          updatedAt: newDate,
+        });
+        const res = await newRecipe.save();
+        return res;
+      } catch (error) {
+        throw new Error('Could not create recipe');
+      }
+    },
+    async editRecipe(_, { id, recipeEditInput: { title, description } }) {
+      const res = await Recipe.findByIdAndUpdate(
+        id,
+        { title, description, updatedAt: new Date().toISOString() },
+        { new: true },
+      );
+      if (!res) {
+        throw new Error('Recipe not found');
+      }
+      return res.toObject();
+    },
+    async deleteRecipe(_, { id }) {
+      const wasDeleted = await Recipe.deleteOne({ _id: id });
+      if (!wasDeleted) {
+        throw new Error('Recipe not found');
+      }
+      return wasDeleted.deletedCount; // 1 if deleted, 0 if not
+    },
+    async deleteAllRecipes() {
+      const res = await Recipe.deleteMany({});
+      return res.deletedCount;
     },
   },
 };
