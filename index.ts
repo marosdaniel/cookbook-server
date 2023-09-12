@@ -28,6 +28,8 @@ mongoose
   .then(() => {
     console.log('Connected to MongoDB...');
     return startStandaloneServer(server, {
+      // if the playground is open, it runs introspection against the graph at an interval
+      // not a problem
       context,
       listen: { port: PORT },
     });

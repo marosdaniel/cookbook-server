@@ -1,3 +1,8 @@
+enum UserRole {
+  ADMIN
+  USER
+}
+
 type User {
   _id: ID!
   firstName: String!
@@ -8,6 +13,7 @@ type User {
   recipes: [Recipe]!
   favoriteRecipes: [Recipe]!
   locale: String!
+  role: UserRole!
 }
 
 input UserCreateInput {

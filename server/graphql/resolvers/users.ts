@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import throwCustomError, { ErrorTypes } from '../../helpers/error-handler.helper';
 import { User } from '../models';
+import { EUserRoles } from '../models/User';
 
 const userResolvers = {
   Query: {
@@ -59,6 +60,7 @@ const userResolvers = {
           locale: 'en-GB',
           recipes: [],
           favoriteRecipes: [],
+          role: EUserRoles.USER,
         });
         const res = await newUser.save();
         return res;
