@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import validator from 'validator';
 import throwCustomError, { ErrorTypes } from '../../helpers/error-handler.helper';
 import { User } from '../models';
 import { EUserRoles } from '../models/User';
@@ -27,10 +28,18 @@ const userResolvers = {
         throw new Error('Please fill in all fields');
       }
 
-      const emailRegex = /\S+@\S+\.\S+/;
-      if (!emailRegex.test(email)) {
+      if (!validator.isEmail(email)) {
         throw new Error('Invalid email');
       }
+
+      if (validator.isLength(password, { min: 5, max: 20, allow_whitespace: false })) {
+        throw new Error('Password must be at least 5, maximum 20 characters');
+      }
+
+      if (validator.isLength(userName, { min: 3, max: 20, allow_whitespace: false })) {
+        throw new Error('Password must be at least 5, maximum 20 characters');
+      }
+
       const userNameRegex = /^[a-zA-Z0-9]+$/;
       if (!userNameRegex.test(userName)) {
         throw new Error('Invalid username');

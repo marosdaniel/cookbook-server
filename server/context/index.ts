@@ -20,7 +20,7 @@ const context = async ({ req, res }) => {
   const firstFieldValueNameFromOperation = operationDefinition =>
     operationDefinition.selectionSet.selections[0].name.value;
   const { operationName } = req.body;
-  const query = req.body.query;
+  const { query } = req.body;
   const parsedQuery = parse(query);
 
   const operationDefinition = firstFieldValueNameFromOperation(firstOperationDefinition(parsedQuery));
