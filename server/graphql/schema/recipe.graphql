@@ -11,7 +11,6 @@ type Recipe {
 input RecipeCreateInput {
   title: String!
   description: String!
-  createdBy: String!
 }
 
 input RecipeEditInput {
