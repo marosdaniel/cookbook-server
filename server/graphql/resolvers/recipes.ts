@@ -29,11 +29,10 @@ const recipeResolvers = {
   },
   Mutation: {
     async createRecipe(_, { recipeCreateInput: { title, description } }, context) {
-      console.log(context.userId);
       try {
         const user = await User.findById(context.userId);
         if (!user) {
-          throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
+          throwCustomError('Unauthenticated operation', ErrorTypes.UNAUTHENTICATED);
         }
         const newDate = new Date().toISOString();
         const newRecipe = new Recipe({
@@ -50,7 +49,12 @@ const recipeResolvers = {
       }
     },
 
-    async editRecipe(_, { id, recipeEditInput: { title, description } }) {
+    async editRecipe(_, { id, recipeEditInput: { title, description } }, context) {
+      const user = await User.findById(context.userId);
+      if (!user) {
+        throwCustomError('Unauthenticated operation', ErrorTypes.UNAUTHENTICATED);
+      }
+
       const res = await Recipe.findByIdAndUpdate(
         id,
         { title, description, updatedAt: new Date().toISOString() },
@@ -61,7 +65,11 @@ const recipeResolvers = {
       }
       return res.toObject();
     },
-    async deleteRecipe(_, { id }) {
+    async deleteRecipe(_, { id }, context) {
+      const user = await User.findById(context.userId);
+      if (!user) {
+        throwCustomError('Unauthenticated operation', ErrorTypes.UNAUTHENTICATED);
+      }
       const wasDeleted = await Recipe.deleteOne({ _id: id });
       if (!wasDeleted) {
         throw new Error('Recipe not found');
