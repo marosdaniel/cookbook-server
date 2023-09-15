@@ -1,3 +1,8 @@
+enum UserRole {
+  ADMIN
+  USER
+}
+
 type User {
   _id: ID!
   firstName: String!
@@ -8,9 +13,10 @@ type User {
   recipes: [Recipe]!
   favoriteRecipes: [Recipe]!
   locale: String!
+  role: UserRole!
 }
 
-input UserCreateInput {
+input UserRegisterInput {
   firstName: String!
   lastName: String!
   userName: String!
@@ -25,14 +31,26 @@ input UserEditInput {
   locale: String
 }
 
+input UserLoginInput {
+  userNameOrEmail: String!
+  password: String!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+  userId: ID!
+}
+
 type Query {
   getUserById(id: ID!): User!
   getAllUser: [User]!
 }
 
 type Mutation {
-  createUser(userCreateInput: UserCreateInput): User!
+  loginUser(userLoginInput: UserLoginInput!): AuthPayload!
+  createUser(userRegisterInput: UserRegisterInput): User!
   editUser(id: ID!, userEditInput: UserEditInput!): User!
   deleteUser(id: ID!): Boolean!
-  deleteAllUser: [User]!
+  deleteAllUser: Int!
 }

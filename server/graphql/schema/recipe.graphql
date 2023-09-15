@@ -5,7 +5,7 @@ type Recipe {
   createdAt: String!
   updatedAt: String!
   createdBy: String!
-  authorId: ID! # ID of the user who created the recipe
+  authorId: String
 }
 
 input RecipeCreateInput {

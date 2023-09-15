@@ -1,32 +1,47 @@
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import validator from 'validator';
+import throwCustomError, { ErrorTypes } from '../../helpers/error-handler.helper';
 import { User } from '../models';
+import { EUserRoles } from '../models/User';
 
 const userResolvers = {
   Query: {
     async getUserById(_, { id }: { id: string }) {
       const user = await User.findById(id);
       if (!user) {
-        throw new Error('User not found');
+        throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
       }
       return user;
     },
     async getAllUser(_, { limit }: { limit: number }) {
       const users = await User.find().sort({ createdAt: -1 }).limit(limit);
       if (!users || users.length === 0) {
-        throw new Error('Users not found');
+        throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
       }
       return users;
     },
   },
   Mutation: {
-    async createUser(_, { userCreateInput: { firstName, lastName, userName, email, password } }) {
+    async createUser(_, { userRegisterInput: { firstName, lastName, userName, email, password } }) {
       if (!firstName || !lastName || !userName || !email || !password) {
         throw new Error('Please fill in all fields');
       }
 
-      const emailRegex = /\S+@\S+\.\S+/;
-      if (!emailRegex.test(email)) {
+      if (!validator.isEmail(email)) {
         throw new Error('Invalid email');
       }
+
+      if (!validator.isLength(password, { min: 5, max: 20, allow_whitespace: false })) {
+        throw new Error('Password must be at least 5, maximum 20 characters');
+      }
+
+      if (!validator.isLength(userName, { min: 3, max: 20, allow_whitespace: false })) {
+        throw new Error('Password must be at least 5, maximum 20 characters');
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
       const userNameRegex = /^[a-zA-Z0-9]+$/;
       if (!userNameRegex.test(userName)) {
         throw new Error('Invalid username');
@@ -51,9 +66,12 @@ const userResolvers = {
           lastName,
           userName,
           email,
-          password,
+          password: hashedPassword,
           createdAt: newDate,
           locale: 'en-GB',
+          recipes: [],
+          favoriteRecipes: [],
+          role: EUserRoles.USER,
         });
         const res = await newUser.save();
         return res;
@@ -62,21 +80,50 @@ const userResolvers = {
         throw new Error('Could not create user');
       }
     },
-    // async editRecipe(_, { id, recipeEditInput: { title, description } }) {
-    //   const res = await Recipe.findByIdAndUpdate(
-    //     id,
-    //     { title, description, updatedAt: new Date().toISOString() },
-    //     { new: true },
-    //   );
-    //   if (!res) {
-    //     throw new Error('Recipe not found');
-    //   }
-    //   return res.toObject();
-    // },
+    async loginUser(_, { userLoginInput: { userNameOrEmail, password } }) {
+      const user = await User.findOne({ $or: [{ userName: userNameOrEmail }, { email: userNameOrEmail }] });
+
+      if (!user) {
+        throwCustomError('Invalid user', ErrorTypes.UNAUTHENTICATED);
+      }
+
+      const validPassword = await bcrypt.compare(password, user.password);
+
+      if (!validPassword) {
+        throwCustomError('Invalid password', ErrorTypes.UNAUTHENTICATED);
+      }
+
+      const token = jwt.sign({ userId: user._id.toString() }, process.env.JWT_PRIVATE_KEY, { expiresIn: '30d' });
+
+      return {
+        token,
+        user,
+        userId: user._id.toString(),
+      };
+    },
+    async editUser(_, { id, userEditInput }) {
+      try {
+        const user = await User.findById(id);
+
+        if (!user) {
+          throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
+        }
+
+        Object.assign(user, userEditInput);
+
+        // mongoose pre-save hook will hash the password if it was changed
+        await user.save();
+
+        return user;
+      } catch (error) {
+        console.error('Error while editing user:', error);
+        throwCustomError('Could not edit user', ErrorTypes.UNAUTHENTICATED);
+      }
+    },
     async deleteUser(_, { id }) {
       const wasDeleted = await User.deleteOne({ _id: id });
       if (!wasDeleted) {
-        throw new Error('User not found');
+        throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
       }
       return wasDeleted.deletedCount; // 1 if deleted, 0 if not
     },
