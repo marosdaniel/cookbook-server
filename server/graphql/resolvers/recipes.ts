@@ -43,6 +43,9 @@ const recipeResolvers = {
           updatedAt: newDate,
         });
         const res = await newRecipe.save();
+        user.recipes.push(res);
+        const res2 = await user.save();
+        console.log('res2', res2);
         return res;
       } catch (error) {
         throw new Error(error);

@@ -1,5 +1,6 @@
 import { Schema, model, Document, ObjectId } from 'mongoose';
 import bcrypt from 'bcrypt';
+import { IRecipe } from './Recipe';
 
 export enum EUserRoles {
   USER = 'USER',
@@ -13,8 +14,8 @@ interface IUser extends Document {
   email: string;
   password: string;
   createdAt: string;
-  recipes: ObjectId[];
-  favoriteRecipes: ObjectId[];
+  recipes: IRecipe[];
+  favoriteRecipes: IRecipe[];
   locale: string;
   role: EUserRoles;
 }

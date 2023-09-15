@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose';
 
 // not sure if it is necessary to define the interface
-interface IRecipe {
+export interface IRecipe {
   id: string;
   title: string;
   description?: string;
