@@ -38,7 +38,6 @@ const context = async ({ req, res }) => {
   }
 
   const token = req.headers.authorization || '';
-
   const user = await getUser(token);
 
   if (!user) {
@@ -46,7 +45,7 @@ const context = async ({ req, res }) => {
   }
 
   // add the user to the context
-  return { user };
+  return user;
 };
 
 export default context;

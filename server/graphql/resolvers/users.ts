@@ -23,7 +23,7 @@ const userResolvers = {
     },
   },
   Mutation: {
-    async createUser(_, { userCreateInput: { firstName, lastName, userName, email, password } }) {
+    async createUser(_, { userRegisterInput: { firstName, lastName, userName, email, password } }) {
       if (!firstName || !lastName || !userName || !email || !password) {
         throw new Error('Please fill in all fields');
       }
@@ -32,13 +32,15 @@ const userResolvers = {
         throw new Error('Invalid email');
       }
 
-      if (validator.isLength(password, { min: 5, max: 20, allow_whitespace: false })) {
+      if (!validator.isLength(password, { min: 5, max: 20, allow_whitespace: false })) {
         throw new Error('Password must be at least 5, maximum 20 characters');
       }
 
-      if (validator.isLength(userName, { min: 3, max: 20, allow_whitespace: false })) {
+      if (!validator.isLength(userName, { min: 3, max: 20, allow_whitespace: false })) {
         throw new Error('Password must be at least 5, maximum 20 characters');
       }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
 
       const userNameRegex = /^[a-zA-Z0-9]+$/;
       if (!userNameRegex.test(userName)) {
@@ -64,7 +66,7 @@ const userResolvers = {
           lastName,
           userName,
           email,
-          password,
+          password: hashedPassword,
           createdAt: newDate,
           locale: 'en-GB',
           recipes: [],
@@ -91,11 +93,12 @@ const userResolvers = {
         throwCustomError('Invalid password', ErrorTypes.UNAUTHENTICATED);
       }
 
-      const token = jwt.sign({ userId: user.id }, process.env.JWT_PRIVATE_KEY, { expiresIn: '30d' });
+      const token = jwt.sign({ userId: user._id.toString() }, process.env.JWT_PRIVATE_KEY, { expiresIn: '30d' });
 
       return {
         token,
         user,
+        userId: user._id.toString(),
       };
     },
     async editUser(_, { id, userEditInput }) {

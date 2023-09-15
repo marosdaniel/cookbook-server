@@ -10,10 +10,11 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { loadSchema } from '@graphql-tools/load';
 
+import resolvers from './server/graphql/resolvers';
 import context from './server/context';
 
 dotenv.config();
-import resolvers from './server/graphql/resolvers';
+
 const MONGO_DB = process.env.MONGO_URI;
 const PORT: number = +process.env.PORT || 8080;
 
@@ -41,14 +42,16 @@ await server.start();
 // and our expressMiddleware function.
 app.use(
   '/',
-  cors<cors.CorsRequest>(),
+  cors<cors.CorsRequest>({
+    // origin: '*',
+    origin: 'http://localhost:8080',
+    credentials: true,
+  }),
   // 50mb is the limit that `startStandaloneServer` uses, but you may configure this to suit your needs
   bodyParser.json({ limit: '50mb' }),
   // expressMiddleware accepts the same arguments:
   // an Apollo Server instance and optional configuration options
   expressMiddleware(server, {
-    // if the playground is open, it runs introspection against the graph at an interval
-    // not a problem
     context,
   }),
 );

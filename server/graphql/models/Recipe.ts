@@ -1,5 +1,4 @@
 import { model, Schema } from 'mongoose';
-import { User } from './User';
 
 // not sure if it is necessary to define the interface
 interface IRecipe {
@@ -9,7 +8,7 @@ interface IRecipe {
   createdAt: string;
   createdBy: string;
   updatedAt: string;
-  authorId: { type: typeof Schema.Types.ObjectId; ref: string };
+  author: { type: typeof Schema.Types.ObjectId; ref: string };
 }
 const recipeSchema = new Schema<IRecipe>({
   id: String,
@@ -18,7 +17,7 @@ const recipeSchema = new Schema<IRecipe>({
   createdAt: String,
   createdBy: { type: String, required: true },
   updatedAt: String,
-  authorId: { type: Schema.Types.ObjectId, ref: 'User' },
+  author: { type: Schema.Types.ObjectId, ref: 'User' },
 });
 
 export const Recipe = model('Recipe', recipeSchema);

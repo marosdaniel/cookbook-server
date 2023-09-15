@@ -1,4 +1,5 @@
-import { Recipe } from '../models';
+import { Recipe, User } from '../models';
+import throwCustomError, { ErrorTypes } from '../../helpers/error-handler.helper';
 
 const recipeResolvers = {
   Query: {
@@ -27,22 +28,28 @@ const recipeResolvers = {
     },
   },
   Mutation: {
-    async createRecipe(_, { recipeCreateInput: { title, description, createdBy } }) {
+    async createRecipe(_, { recipeCreateInput: { title, description } }, context) {
+      console.log(context.userId);
       try {
+        const user = await User.findById(context.userId);
+        if (!user) {
+          throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
+        }
         const newDate = new Date().toISOString();
         const newRecipe = new Recipe({
           title,
           description,
-          createdBy,
+          createdBy: user.userName,
           createdAt: newDate,
           updatedAt: newDate,
         });
         const res = await newRecipe.save();
         return res;
       } catch (error) {
-        throw new Error('Could not create recipe');
+        throw new Error(error);
       }
     },
+
     async editRecipe(_, { id, recipeEditInput: { title, description } }) {
       const res = await Recipe.findByIdAndUpdate(
         id,
