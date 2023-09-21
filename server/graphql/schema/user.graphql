@@ -10,8 +10,8 @@ type User {
   userName: String!
   email: String!
   password: String!
-  recipes: [Recipe]!
-  favoriteRecipes: [Recipe]!
+  recipes: [Recipe!]!
+  favoriteRecipes: [Recipe!]!
   locale: String!
   role: UserRole!
 }
@@ -53,4 +53,5 @@ type Mutation {
   editUser(id: ID!, userEditInput: UserEditInput!): User!
   deleteUser(id: ID!): Boolean!
   deleteAllUser: Int!
+  addToFavoriteRecipes(userId: ID!, recipeId: ID!): User!
 }

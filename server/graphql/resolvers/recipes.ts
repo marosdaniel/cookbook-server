@@ -1,5 +1,6 @@
 import { Recipe, User } from '../models';
 import throwCustomError, { ErrorTypes } from '../../helpers/error-handler.helper';
+import { EUserRoles } from '../models/User';
 
 const recipeResolvers = {
   Query: {
@@ -28,7 +29,7 @@ const recipeResolvers = {
     },
   },
   Mutation: {
-    async createRecipe(_, { recipeCreateInput: { title, description } }, context) {
+    async createRecipe(_, { recipeCreateInput: { title, description, ingredients, instructions } }, context) {
       try {
         const user = await User.findById(context.userId);
         if (!user) {
@@ -38,36 +39,57 @@ const recipeResolvers = {
         const newRecipe = new Recipe({
           title,
           description,
+          ingredients,
+          instructions,
           createdBy: user.userName,
           createdAt: newDate,
           updatedAt: newDate,
         });
+
         const res = await newRecipe.save();
-        user.recipes.push(res);
-        const res2 = await user.save();
-        console.log('res2', res2);
+        // dont need to save recipe to user
+        // user.recipes.push(res);
+        // const res2 = await user.save();
         return res;
       } catch (error) {
         throw new Error(error);
       }
     },
 
-    async editRecipe(_, { id, recipeEditInput: { title, description } }, context) {
-      const user = await User.findById(context.userId);
-      if (!user) {
-        throwCustomError('Unauthenticated operation', ErrorTypes.UNAUTHENTICATED);
-      }
+    async editRecipe(_, { id, recipeEditInput: { title, description, ingredients, instructions } }, context) {
+      try {
+        const user = await User.findById(context.userId);
+        if (!user) {
+          throwCustomError('Unauthenticated operation', ErrorTypes.UNAUTHENTICATED);
+        }
 
-      const res = await Recipe.findByIdAndUpdate(
-        id,
-        { title, description, updatedAt: new Date().toISOString() },
-        { new: true },
-      );
-      if (!res) {
-        throw new Error('Recipe not found');
+        const updatedFields = {
+          title,
+          description,
+          ingredients,
+          instructions,
+          updatedAt: new Date().toISOString(),
+        };
+
+        if (ingredients) {
+          const existingRecipe = await Recipe.findById(id);
+
+          const updatedIngredients = existingRecipe.ingredients.map(existingIngredient => {
+            const newIngredient = ingredients.find(newIngredient => newIngredient.name === existingIngredient.name);
+            return newIngredient || existingIngredient;
+          });
+
+          updatedFields.ingredients = updatedIngredients;
+        }
+
+        const updatedRecipe = await Recipe.findByIdAndUpdate(id, { $set: updatedFields }, { new: true });
+
+        return updatedRecipe;
+      } catch (error) {
+        throw new Error(error);
       }
-      return res.toObject();
     },
+
     async deleteRecipe(_, { id }, context) {
       const user = await User.findById(context.userId);
       if (!user) {
@@ -79,7 +101,16 @@ const recipeResolvers = {
       }
       return wasDeleted.deletedCount; // 1 if deleted, 0 if not
     },
-    async deleteAllRecipes() {
+    async deleteAllRecipes(_, {}, context) {
+      const user = await User.findById(context.userId);
+      if (!user) {
+        throwCustomError('Unauthenticated operation', ErrorTypes.UNAUTHENTICATED);
+      }
+
+      if (user.role !== EUserRoles.ADMIN) {
+        throwCustomError('You have no rights to do that operation', ErrorTypes.UNAUTHENTICATED);
+      }
+
       const res = await Recipe.deleteMany({});
       return res.deletedCount;
     },

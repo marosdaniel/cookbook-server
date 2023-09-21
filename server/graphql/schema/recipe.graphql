@@ -1,21 +1,39 @@
+type Ingredient {
+  name: String!
+  quantity: Float!
+  unit: String!
+}
+
+input IngredientInput {
+  name: String!
+  quantity: Float!
+  unit: String!
+}
+
 type Recipe {
   _id: ID!
   title: String!
-  description: String!
+  description: String
+  ingredients: [Ingredient]!
+  instructions: String!
   createdAt: String!
   updatedAt: String!
-  createdBy: String!
   authorId: String
+  createdBy: String!
 }
 
 input RecipeCreateInput {
   title: String!
-  description: String!
+  description: String # optional
+  ingredients: [IngredientInput]!
+  instructions: String!
 }
 
 input RecipeEditInput {
   title: String
   description: String
+  ingredients: [IngredientInput]
+  instructions: String
 }
 
 type Query {

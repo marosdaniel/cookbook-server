@@ -1,10 +1,17 @@
 import { model, Schema } from 'mongoose';
 
-// not sure if it is necessary to define the interface
+export interface IIngredient {
+  id: string;
+  name: string;
+  quantity: number;
+  unit: string;
+}
 export interface IRecipe {
   id: string;
   title: string;
   description?: string;
+  instructions: string;
+  ingredients: IIngredient[];
   createdAt: string;
   createdBy: string;
   updatedAt: string;
@@ -14,6 +21,8 @@ const recipeSchema = new Schema<IRecipe>({
   id: String,
   title: { type: String, required: true },
   description: String,
+  instructions: { type: String, required: true },
+  ingredients: [{ name: String, quantity: Number, unit: String }],
   createdAt: String,
   createdBy: { type: String, required: true },
   updatedAt: String,
