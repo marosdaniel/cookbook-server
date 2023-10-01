@@ -1,5 +1,4 @@
 import { model, Schema } from 'mongoose';
-
 export interface IIngredient {
   id: string;
   name: string;

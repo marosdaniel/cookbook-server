@@ -13,7 +13,7 @@ interface IUser extends Document {
   userName: string;
   email: string;
   password: string;
-  createdAt: string;
+  createdAt: Date;
   recipes: IRecipe[];
   favoriteRecipes: IRecipe[];
   locale: string;
@@ -27,7 +27,7 @@ const userSchema = new Schema<IUser>({
   userName: String,
   email: String,
   password: String,
-  createdAt: String,
+  createdAt: { type: Date, default: Date.now },
   recipes: [{ type: Schema.Types.ObjectId, ref: 'Recipe' }],
   favoriteRecipes: [{ type: Schema.Types.ObjectId, ref: 'Recipe' }],
   locale: String,

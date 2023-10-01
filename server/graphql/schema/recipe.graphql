@@ -18,7 +18,6 @@ type Recipe {
   instructions: String!
   createdAt: String!
   updatedAt: String!
-  authorId: String
   createdBy: String!
 }
 

@@ -8,7 +8,7 @@ import { EUserRoles } from '../models/User';
 const userResolvers = {
   Query: {
     async getUserById(_, { id }: { id: string }) {
-      const user = await User.findById(id);
+      const user = await User.findById(id).populate('favoriteRecipes');
       if (!user) {
         throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
       }

@@ -47,7 +47,7 @@ const recipeResolvers = {
         });
 
         const res = await newRecipe.save();
-        // dont need to save recipe to user
+        // not needed to save recipe to user
         // user.recipes.push(res);
         // const res2 = await user.save();
         return res;
