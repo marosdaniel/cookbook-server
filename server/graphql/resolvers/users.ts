@@ -2,13 +2,13 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import validator from 'validator';
 import throwCustomError, { ErrorTypes } from '../../helpers/error-handler.helper';
-import { User } from '../models';
+import { Recipe, User } from '../models';
 import { EUserRoles } from '../models/User';
 
 const userResolvers = {
   Query: {
     async getUserById(_, { id }: { id: string }) {
-      const user = await User.findById(id);
+      const user = await User.findById(id).populate('favoriteRecipes');
       if (!user) {
         throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
       }
@@ -130,6 +130,26 @@ const userResolvers = {
     async deleteAllUser() {
       const res = await User.deleteMany({});
       return res.deletedCount;
+    },
+    addToFavoriteRecipes: async (_, { userId, recipeId }) => {
+      const user = await User.findById(userId);
+      if (!user) {
+        throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
+      }
+
+      const recipe = await Recipe.findById(recipeId);
+      if (!recipe) {
+        throw new Error('Recipe not found');
+      }
+
+      if (user.favoriteRecipes.includes(recipeId)) {
+        throw new Error('Recipe has already been added to favorites');
+      }
+
+      user.favoriteRecipes.push(recipeId);
+      await user.save();
+
+      return user;
     },
   },
 };
