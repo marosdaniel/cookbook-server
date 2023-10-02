@@ -12,20 +12,22 @@ const recipeResolvers = {
       return recipe;
     },
     async getRecipes(_, { limit }: { limit: number }) {
+      const totalRecipes = await Recipe.countDocuments();
       const recipes = await Recipe.find().sort({ createdAt: -1 }).limit(limit);
       if (!recipes) {
         throw new Error('Recipes not found');
       }
-      return recipes;
+      return { recipes, totalRecipes };
     },
     async getRecipesByTitle(_, { title, limit }: { title: string; limit: number }) {
+      const totalRecipes = await Recipe.countDocuments();
       const recipes = await Recipe.find({ title: { $regex: new RegExp(title, 'i') } })
         .sort({ createdAt: -1 })
         .limit(limit);
       if (!recipes || recipes.length === 0) {
         throw new Error('Recipes not found');
       }
-      return recipes;
+      return { recipes, totalRecipes };
     },
   },
   Mutation: {
@@ -99,6 +101,11 @@ const recipeResolvers = {
       if (!wasDeleted) {
         throw new Error('Recipe not found');
       }
+
+      // remove recipe from user's favorite recipes
+      // to be verified
+      await User.updateMany({}, { $pull: { favoriteRecipes: id } });
+
       return wasDeleted.deletedCount; // 1 if deleted, 0 if not
     },
     async deleteAllRecipes(_, {}, context) {

@@ -35,10 +35,15 @@ input RecipeEditInput {
   instructions: String
 }
 
+type RecipeData {
+  recipes: [Recipe]!
+  totalRecipes: Int!
+}
+
 type Query {
   getRecipeById(_id: ID!): Recipe!
-  getRecipes(limit: Int): [Recipe]!
-  getRecipesByTitle(title: String!, limit: Int): [Recipe]!
+  getRecipes(limit: Int): RecipeData!
+  getRecipesByTitle(title: String!, limit: Int): RecipeData!
 }
 
 type Mutation {

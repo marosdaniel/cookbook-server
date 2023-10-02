@@ -131,7 +131,7 @@ const userResolvers = {
       const res = await User.deleteMany({});
       return res.deletedCount;
     },
-    addToFavoriteRecipes: async (_, { userId, recipeId }, context) => {
+    addToFavoriteRecipes: async (_, { userId, recipeId }) => {
       const user = await User.findById(userId);
       if (!user) {
         throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
