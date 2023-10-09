@@ -10,7 +10,7 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { loadSchema } from '@graphql-tools/load';
 
-import resolvers from './server/graphql/resolvers';
+import resolvers from './server/graphql/resolvers/index.js';
 import context from './server/context';
 
 dotenv.config();
