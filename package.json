@@ -5,7 +5,7 @@
   "main": "index.ts",
   "type": "module",
   "engines": {
-    "node": "16.17.0"
+    "node": "18.x"
   },
   "scripts": {
     "start": "node index.ts",
@@ -13,7 +13,8 @@
     "compile": "tsc",
     "dev": "nodemon --exec ts-node ./index.ts",
     "lint": "eslint server --ext .js,.jsx,.ts,.tsx",
-    "update-packages": "npx npm-check-updates"
+    "update-packages": "npx npm-check-updates",
+    "vercel-build": "echo hello"
   },
   "repository": {
     "type": "git",
@@ -26,7 +27,7 @@
   },
   "homepage": "https://github.com/marosdaniel/cookbook-server#readme",
   "dependencies": {
-    "@apollo/server": "^4.9.3",
+    "@apollo/server": "^4.9.4",
     "@graphql-tools/graphql-file-loader": "^8.0.0",
     "@graphql-tools/load": "^8.0.0",
     "@graphql-tools/merge": "^9.0.0",
@@ -34,14 +35,14 @@
     "cors": "^2.8.5",
     "graphql": "^16.8.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^7.5.3",
+    "mongoose": "^7.6.0",
     "validator": "^13.11.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.14",
-    "@types/node": "^20.8.0",
+    "@types/node": "^20.8.3",
     "dotenv": "^16.3.1",
-    "eslint": "^8.50.0",
+    "eslint": "^8.51.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-node": "^11.1.0",
     "nodemon": "^3.0.1",
