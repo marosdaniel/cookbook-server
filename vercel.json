@@ -8,10 +8,6 @@
   "rewrites": [
     {
       "source": "/(.*)",
-      "function": "index.js"
-    },
-    {
-      "source": "/(.*)",
       "destination": "/"
     }
   ]
