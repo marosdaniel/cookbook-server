@@ -1,14 +1,8 @@
 {
   "functions": {
-    "index.js": {
+    "index.ts": {
       "runtime": "nodejs18.x",
       "maxDuration": 30
     }
-  },
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/"
-    }
-  ]
+  }
 }
