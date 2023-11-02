@@ -44,7 +44,7 @@ app.use(
   '/',
   cors<cors.CorsRequest>({
     // origin: '*',
-    origin: 'http://localhost:8080',
+    origin: ['http://localhost:8080', 'http://localhost:3000'],
     credentials: true,
   }),
   // 50mb is the limit that `startStandaloneServer` uses, but you may configure this to suit your needs
