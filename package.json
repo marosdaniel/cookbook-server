@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node dist/index.js",
-    "build": "rm -rf dist && tsc && tsc-alias",
+    "build": "rm -rf dist && tsc",
     "compile": "tsc",
     "dev": "nodemon --exec ts-node ./index.ts",
     "lint": "eslint server --ext .js,.jsx,.ts,.tsx",
@@ -47,7 +47,6 @@
     "eslint-plugin-node": "^11.1.0",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
-    "tsc-alias": "1.8.8",
     "typescript": "^5.2.2"
   }
 }
