@@ -13,6 +13,10 @@
     "types": ["node"],
     "baseUrl": "./"
   },
+  "tsc-alias": {
+    "resolveFullPaths": true,
+    "verbose": false
+  },
   "ts-node": {
     "esm": true,
     "experimentalSpecifierResolution": "node"
