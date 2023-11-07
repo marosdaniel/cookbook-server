@@ -38,13 +38,16 @@ const server = new ApolloServer({
 
 await server.start();
 
-// Set up our Express middleware to handle CORS, body parsing,
-// and our expressMiddleware function.
 app.use(
   '/',
   cors<cors.CorsRequest>({
     // origin: '*',
-    origin: ['http://localhost:8080', 'http://localhost:3000', 'https://teal-light-gazelle.cyclic.app'],
+    origin: [
+      'http://localhost:8080',
+      'http://localhost:3000',
+      'https://teal-light-gazelle.cyclic.app',
+      'https://studio.apollographql.com',
+    ],
     credentials: true,
   }),
   // 50mb is the limit that `startStandaloneServer` uses, but you may configure this to suit your needs
