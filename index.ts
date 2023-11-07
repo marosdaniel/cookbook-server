@@ -40,13 +40,13 @@ app.use(
       'http://localhost:8080',
       'http://localhost:3000',
       'https://teal-light-gazelle.cyclic.app',
+      'https://cookbook-client-sepia.vercel.app',
       'https://studio.apollographql.com',
     ],
     credentials: true,
   }),
   // 50mb is the limit that `startStandaloneServer` uses, but you may configure this to suit your needs
   bodyParser.json({ limit: '50mb' }),
-  express.json(),
   // expressMiddleware accepts the same arguments:
   // an Apollo Server instance and optional configuration options
   expressMiddleware(server, {
