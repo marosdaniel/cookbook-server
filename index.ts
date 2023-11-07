@@ -22,12 +22,6 @@ const schema = await loadSchema('server/graphql/**/*.graphql', {
   loaders: [new GraphQLFileLoader()],
 });
 
-// TODO: swap to using expressMiddleware
-// https://www.apollographql.com/docs/apollo-server/api/express-middleware
-// expressMiddleware will enable using subscriptions
-
-// TODO: add CORS config
-// https://www.apollographql.com/docs/apollo-server/security/cors/
 const app = express();
 const httpServer = http.createServer(app);
 const server = new ApolloServer({
@@ -66,5 +60,5 @@ mongoose
   })
   .then(() => {
     new Promise<void>(resolve => httpServer.listen({ port: PORT }, resolve));
-    console.log(`🚀 Server ready at http://localhost:8080/`);
+    console.log(`🚀 Server ready!`);
   });
