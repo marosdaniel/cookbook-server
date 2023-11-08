@@ -1,7 +1,8 @@
+import { GraphQLError } from 'graphql';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import validator from 'validator';
-import throwCustomError, { ErrorTypes } from '../../helpers/error-handler.helper';
+
 import { Recipe, User } from '../models';
 import { EUserRoles } from '../models/User';
 
@@ -10,14 +11,22 @@ const userResolvers = {
     async getUserById(_, { id }: { id: string }) {
       const user = await User.findById(id).populate('favoriteRecipes');
       if (!user) {
-        throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
+        throw new GraphQLError('User not found.', {
+          extensions: {
+            code: 401,
+          },
+        });
       }
       return user;
     },
     async getAllUser(_, { limit }: { limit: number }) {
       const users = await User.find().sort({ createdAt: -1 }).limit(limit);
       if (!users || users.length === 0) {
-        throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
+        throw new GraphQLError('User not found.', {
+          extensions: {
+            code: 401,
+          },
+        });
       }
       return users;
     },
@@ -84,13 +93,21 @@ const userResolvers = {
       const user = await User.findOne({ $or: [{ userName: userNameOrEmail }, { email: userNameOrEmail }] });
 
       if (!user) {
-        throwCustomError('Invalid user', ErrorTypes.UNAUTHENTICATED);
+        throw new GraphQLError('Invalid user.', {
+          extensions: {
+            code: 401,
+          },
+        });
       }
 
       const validPassword = await bcrypt.compare(password, user.password);
 
       if (!validPassword) {
-        throwCustomError('Invalid password', ErrorTypes.UNAUTHENTICATED);
+        throw new GraphQLError('Invalid password.', {
+          extensions: {
+            code: 401,
+          },
+        });
       }
 
       const token = jwt.sign({ userId: user._id.toString() }, process.env.JWT_PRIVATE_KEY, { expiresIn: '30d' });
@@ -106,7 +123,11 @@ const userResolvers = {
         const user = await User.findById(id);
 
         if (!user) {
-          throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
+          throw new GraphQLError('User not found.', {
+            extensions: {
+              code: 401,
+            },
+          });
         }
 
         Object.assign(user, userEditInput);
@@ -117,13 +138,21 @@ const userResolvers = {
         return user;
       } catch (error) {
         console.error('Error while editing user:', error);
-        throwCustomError('Could not edit user', ErrorTypes.UNAUTHENTICATED);
+        throw new GraphQLError('Could not edit user.', {
+          extensions: {
+            code: 401,
+          },
+        });
       }
     },
     async deleteUser(_, { id }) {
       const wasDeleted = await User.deleteOne({ _id: id });
       if (!wasDeleted) {
-        throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
+        throw new GraphQLError('User not found.', {
+          extensions: {
+            code: 401,
+          },
+        });
       }
       return wasDeleted.deletedCount; // 1 if deleted, 0 if not
     },
@@ -134,7 +163,11 @@ const userResolvers = {
     addToFavoriteRecipes: async (_, { userId, recipeId }) => {
       const user = await User.findById(userId);
       if (!user) {
-        throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
+        throw new GraphQLError('User not found.', {
+          extensions: {
+            code: 401,
+          },
+        });
       }
 
       const recipe = await Recipe.findById(recipeId);

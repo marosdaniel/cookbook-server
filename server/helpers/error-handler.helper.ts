@@ -35,6 +35,7 @@ export default (errorMessage, errorType) => {
       http: {
         status: errorType.errorStatus,
       },
+      message: errorMessage,
     },
   });
 };
