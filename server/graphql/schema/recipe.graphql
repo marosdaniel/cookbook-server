@@ -19,6 +19,8 @@ type Recipe {
   createdAt: String!
   updatedAt: String!
   createdBy: String!
+  author: User!
+  preparationTime: Int
 }
 
 input RecipeCreateInput {
@@ -26,6 +28,7 @@ input RecipeCreateInput {
   description: String # optional
   ingredients: [IngredientInput]!
   instructions: String!
+  preparationTime: Int
 }
 
 input RecipeEditInput {
@@ -33,6 +36,7 @@ input RecipeEditInput {
   description: String
   ingredients: [IngredientInput]
   instructions: String
+  preparationTime: Int
 }
 
 type RecipeData {

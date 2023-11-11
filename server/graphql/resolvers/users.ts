@@ -19,6 +19,20 @@ const userResolvers = {
       }
       return user;
     },
+    async getUserByUserName(_, { userName }: { userName: string }) {
+      const user = await User.findOne({ userName }).populate('favoriteRecipes').populate('recipes');
+
+      console.log('user', user);
+
+      if (!user) {
+        throw new GraphQLError('User not found.', {
+          extensions: {
+            code: 401,
+          },
+        });
+      }
+      return user;
+    },
     async getAllUser(_, { limit }: { limit: number }) {
       const users = await User.find().sort({ createdAt: -1 }).limit(limit);
       if (!users || users.length === 0) {

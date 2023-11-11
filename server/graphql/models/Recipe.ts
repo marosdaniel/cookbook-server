@@ -15,6 +15,7 @@ export interface IRecipe {
   createdBy: string;
   updatedAt: string;
   author: { type: typeof Schema.Types.ObjectId; ref: string };
+  prepareTime?: number;
 }
 const recipeSchema = new Schema<IRecipe>({
   id: String,
@@ -26,6 +27,7 @@ const recipeSchema = new Schema<IRecipe>({
   createdBy: { type: String, required: true },
   updatedAt: String,
   author: { type: Schema.Types.ObjectId, ref: 'User' },
+  prepareTime: Number,
 });
 
 export const Recipe = model('Recipe', recipeSchema);
