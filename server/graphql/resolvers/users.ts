@@ -22,8 +22,6 @@ const userResolvers = {
     async getUserByUserName(_, { userName }: { userName: string }) {
       const user = await User.findOne({ userName }).populate('favoriteRecipes').populate('recipes');
 
-      console.log('user', user);
-
       if (!user) {
         throw new GraphQLError('User not found.', {
           extensions: {

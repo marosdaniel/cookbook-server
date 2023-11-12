@@ -1,4 +1,5 @@
 type Ingredient {
+  _id: ID!
   name: String!
   quantity: Float!
   unit: String!
@@ -25,7 +26,7 @@ type Recipe {
 
 input RecipeCreateInput {
   title: String!
-  description: String # optional
+  description: String
   ingredients: [IngredientInput]!
   instructions: String!
   preparationTime: Int
