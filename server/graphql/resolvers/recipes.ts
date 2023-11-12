@@ -31,7 +31,11 @@ const recipeResolvers = {
     },
   },
   Mutation: {
-    async createRecipe(_, { recipeCreateInput: { title, description, ingredients, preparationSteps } }, context) {
+    async createRecipe(
+      _,
+      { recipeCreateInput: { title, description, ingredients, preparationSteps, preparationTime } },
+      context,
+    ) {
       try {
         const user = await User.findById(context.userId);
         if (!user) {
@@ -46,23 +50,34 @@ const recipeResolvers = {
           createdBy: user.userName,
           createdAt: newDate,
           updatedAt: newDate,
+          preparationTime,
         });
 
         const res = await newRecipe.save();
-        // not needed to save recipe to user
-        // user.recipes.push(res);
-        // const res2 = await user.save();
+
+        user.recipes.push(res);
+        await user.save();
+
         return res;
       } catch (error) {
         throw new Error(error);
       }
     },
 
-    async editRecipe(_, { id, recipeEditInput: { title, description, ingredients, preparationSteps } }, context) {
+    async editRecipe(
+      _,
+      { id, recipeEditInput: { title, description, ingredients, preparationSteps, preparationTime } },
+      context,
+    ) {
       try {
         const user = await User.findById(context.userId);
         if (!user) {
           throwCustomError('Unauthenticated operation', ErrorTypes.UNAUTHENTICATED);
+        }
+
+        const existingRecipe = await Recipe.findById(id);
+        if (!existingRecipe) {
+          throwCustomError('Recipe not found', ErrorTypes.NOT_FOUND);
         }
 
         const updatedFields = {
@@ -70,12 +85,11 @@ const recipeResolvers = {
           description,
           ingredients,
           preparationSteps,
+          preparationTime,
           updatedAt: new Date().toISOString(),
         };
 
         if (ingredients) {
-          const existingRecipe = await Recipe.findById(id);
-
           const updatedIngredients = existingRecipe.ingredients.map(existingIngredient => {
             const newIngredient = ingredients.find(newIngredient => newIngredient.name === existingIngredient.name);
             return newIngredient || existingIngredient;
@@ -85,6 +99,16 @@ const recipeResolvers = {
         }
 
         const updatedRecipe = await Recipe.findByIdAndUpdate(id, { $set: updatedFields }, { new: true });
+
+        const usersToUpdate = await User.find({ 'favoriteRecipes._id': id });
+        usersToUpdate.forEach(async userToUpdate => {
+          const updatedFavoriteRecipes = userToUpdate.favoriteRecipes.map(favoriteRecipe => {
+            return favoriteRecipe.id.toString() === id ? { ...favoriteRecipe, ...updatedFields } : favoriteRecipe;
+          });
+
+          userToUpdate.favoriteRecipes = updatedFavoriteRecipes;
+          await userToUpdate.save();
+        });
 
         return updatedRecipe;
       } catch (error) {

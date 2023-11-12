@@ -21,27 +21,20 @@ export interface IRecipe {
   createdBy: string;
   updatedAt: string;
   author: { type: typeof Schema.Types.ObjectId; ref: string };
-  prepareTime?: number;
+  preparationTime?: number;
 }
-
-const preparationStepSchema = new Schema<IPreparationStep>({
-  _id: String,
-  description: { type: String, required: true },
-  order: { type: Number, required: true },
-});
 
 const recipeSchema = new Schema<IRecipe>({
   id: String,
   title: { type: String, required: true },
   description: String,
-  preparationSteps: [preparationStepSchema],
+  preparationSteps: [{ description: String, order: Number }],
   ingredients: [{ name: String, quantity: Number, unit: String }],
   createdAt: String,
   createdBy: { type: String, required: true },
   updatedAt: String,
   author: { type: Schema.Types.ObjectId, ref: 'User' },
-  prepareTime: Number,
+  preparationTime: Number,
 });
 
-export const PreparationStepModel = mongoose.model<IPreparationStep>('PreparationStep', preparationStepSchema);
 export const Recipe = model('Recipe', recipeSchema);
