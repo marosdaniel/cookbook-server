@@ -31,7 +31,7 @@ const recipeResolvers = {
     },
   },
   Mutation: {
-    async createRecipe(_, { recipeCreateInput: { title, description, ingredients, instructions } }, context) {
+    async createRecipe(_, { recipeCreateInput: { title, description, ingredients, preparationSteps } }, context) {
       try {
         const user = await User.findById(context.userId);
         if (!user) {
@@ -42,7 +42,7 @@ const recipeResolvers = {
           title,
           description,
           ingredients,
-          instructions,
+          preparationSteps,
           createdBy: user.userName,
           createdAt: newDate,
           updatedAt: newDate,
@@ -58,7 +58,7 @@ const recipeResolvers = {
       }
     },
 
-    async editRecipe(_, { id, recipeEditInput: { title, description, ingredients, instructions } }, context) {
+    async editRecipe(_, { id, recipeEditInput: { title, description, ingredients, preparationSteps } }, context) {
       try {
         const user = await User.findById(context.userId);
         if (!user) {
@@ -69,7 +69,7 @@ const recipeResolvers = {
           title,
           description,
           ingredients,
-          instructions,
+          preparationSteps,
           updatedAt: new Date().toISOString(),
         };
 

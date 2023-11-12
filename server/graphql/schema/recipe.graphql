@@ -11,12 +11,23 @@ input IngredientInput {
   unit: String!
 }
 
+type PreparationStep {
+  _id: ID!
+  description: String!
+  order: Int!
+}
+
+input PreparationStepInput {
+  description: String!
+  order: Int!
+}
+
 type Recipe {
   _id: ID!
   title: String!
   description: String
   ingredients: [Ingredient]!
-  instructions: String!
+  preparationSteps: [PreparationStep]!
   createdAt: String!
   updatedAt: String!
   createdBy: String!
@@ -28,7 +39,7 @@ input RecipeCreateInput {
   title: String!
   description: String
   ingredients: [IngredientInput]!
-  instructions: String!
+  preparationSteps: [PreparationStepInput]!
   preparationTime: Int
 }
 
@@ -36,7 +47,7 @@ input RecipeEditInput {
   title: String
   description: String
   ingredients: [IngredientInput]
-  instructions: String
+  preparationSteps: [PreparationStepInput]!
   preparationTime: Int
 }
 
