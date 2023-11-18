@@ -1,4 +1,4 @@
-import mongoose, { model, Schema } from 'mongoose';
+import { model, Schema } from 'mongoose';
 export interface IIngredient {
   id: string;
   name: string;
@@ -11,6 +11,12 @@ export interface IPreparationStep {
   description: string;
   order: number;
 }
+
+type TCategory = {
+  name: string;
+  key: string;
+};
+
 export interface IRecipe {
   id: string;
   title: string;
@@ -22,6 +28,7 @@ export interface IRecipe {
   updatedAt: string;
   author: { type: typeof Schema.Types.ObjectId; ref: string };
   preparationTime?: number;
+  categories: TCategory[];
 }
 
 const recipeSchema = new Schema<IRecipe>({
@@ -35,6 +42,7 @@ const recipeSchema = new Schema<IRecipe>({
   updatedAt: String,
   author: { type: Schema.Types.ObjectId, ref: 'User' },
   preparationTime: Number,
+  categories: [{ name: String, key: String }],
 });
 
 export const Recipe = model('Recipe', recipeSchema);
