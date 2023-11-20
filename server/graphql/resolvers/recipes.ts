@@ -103,14 +103,16 @@ const recipeResolvers = {
         const updatedRecipe = await Recipe.findByIdAndUpdate(id, { $set: updatedFields }, { new: true });
 
         const usersToUpdate = await User.find({ 'favoriteRecipes._id': id });
-        usersToUpdate.forEach(async userToUpdate => {
-          const updatedFavoriteRecipes = userToUpdate.favoriteRecipes.map(favoriteRecipe => {
-            return favoriteRecipe.id.toString() === id ? { ...favoriteRecipe, ...updatedFields } : favoriteRecipe;
-          });
+        await Promise.all(
+          usersToUpdate.map(async userToUpdate => {
+            const updatedFavoriteRecipes = userToUpdate.favoriteRecipes.map(favoriteRecipe => {
+              return favoriteRecipe.id.toString() === id ? { ...favoriteRecipe, ...updatedFields } : favoriteRecipe;
+            });
 
-          userToUpdate.favoriteRecipes = updatedFavoriteRecipes;
-          await userToUpdate.save();
-        });
+            userToUpdate.favoriteRecipes = updatedFavoriteRecipes;
+            await userToUpdate.save();
+          }),
+        );
 
         return updatedRecipe;
       } catch (error) {
