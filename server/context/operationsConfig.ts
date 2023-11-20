@@ -1,15 +1,31 @@
+const publicOperations = [
+  'getRecipes',
+  'getRecipeById',
+  'getRecipesByTitle',
+  'getUserById',
+  'getUserByUserName',
+  'createUser',
+  'loginUser',
+];
+
+const authenticatedOperations = [
+  ...publicOperations,
+  'createRecipe',
+  'editRecipe',
+  'deleteRecipe',
+  'deleteUser',
+  'editUser',
+];
+
+// TODO: add operations for blogger role
+const bloggerOperations = [...authenticatedOperations, ''];
+
+const adminOperations = [...bloggerOperations, 'deleteAllRecipes', 'deleteAllUsers'];
+
 const operationsConfig = {
-  publicOperations: [
-    'getRecipes',
-    'getRecipeById',
-    'getRecipesByTitle',
-    'getUserById',
-    'getUserByUserName',
-    'createUser',
-    'loginUser',
-  ],
-  authenticatedOperations: ['createRecipe', 'editRecipe', 'deleteRecipe', 'deleteUser', 'editUser'],
-  adminOperations: ['deleteAllRecipes', 'deleteAllUsers'],
+  publicOperations,
+  authenticatedOperations,
+  adminOperations,
 };
 
 export default operationsConfig;
