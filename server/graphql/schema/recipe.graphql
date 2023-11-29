@@ -74,6 +74,8 @@ type Query {
   getRecipeById(_id: ID!): Recipe!
   getRecipes(limit: Int): RecipeData!
   getRecipesByTitle(title: String!, limit: Int): RecipeData!
+  getRecipesByUserName(userName: String!, limit: Int): RecipeData!
+  getRecipesByUserId(userId: ID!, limit: Int): RecipeData!
 }
 
 type Mutation {

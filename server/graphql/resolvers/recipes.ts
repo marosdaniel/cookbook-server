@@ -29,6 +29,26 @@ const recipeResolvers = {
       }
       return { recipes, totalRecipes };
     },
+    async getRecipesByUserName(_, { userName, limit }: { userName: string; limit: number }) {
+      const totalRecipes = await Recipe.countDocuments({ createdBy: userName });
+      const recipes = await Recipe.find({ createdBy: userName }).sort({ createdAt: -1 }).limit(limit);
+
+      if (!recipes || recipes.length === 0) {
+        throw new Error('Recipes not found for this user');
+      }
+
+      return { recipes, totalRecipes };
+    },
+    async getRecipesByUserId(_, { userId, limit }: { userId: string; limit: number }) {
+      const totalRecipes = await Recipe.countDocuments({ createdBy: userId });
+      const recipes = await Recipe.find({ createdBy: userId }).sort({ createdAt: -1 }).limit(limit);
+
+      if (!recipes || recipes.length === 0) {
+        throw new Error('Recipes not found for this user');
+      }
+
+      return { recipes, totalRecipes };
+    },
   },
   Mutation: {
     async createRecipe(
