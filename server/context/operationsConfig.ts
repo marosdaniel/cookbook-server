@@ -2,6 +2,7 @@ const publicOperations = [
   'getRecipes',
   'getRecipeById',
   'getRecipesByTitle',
+  'getRecipesByUserName',
   'getUserById',
   'getUserByUserName',
   'createUser',
