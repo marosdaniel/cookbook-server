@@ -54,7 +54,6 @@ const context = async ({ req }) => {
   }
 
   const token = req.headers.authorization || '';
-  console.log('req headers authorization', req.headers.authorization);
   const user = await getUser(token);
 
   if (!user) {
