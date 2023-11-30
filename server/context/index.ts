@@ -1,5 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { parse } from 'graphql';
+
+import { EUserRoles, User } from '../../server/graphql/models/User';
 import throwCustomError, { ErrorTypes } from '../helpers/error-handler.helper';
 import operationsConfig from './operationsConfig';
 
@@ -15,7 +17,22 @@ const getUser = async token => {
   }
 };
 
-const context = async ({ req, res }) => {
+const getUserById = async userId => {
+  try {
+    if (userId) {
+      const user = await User.findById(userId);
+      if (!user) {
+        return null;
+      }
+      return user;
+    }
+    return null;
+  } catch (error) {
+    return null;
+  }
+};
+
+const context = async ({ req }) => {
   const firstOperationDefinition = ast => ast.definitions[0];
   const firstFieldValueNameFromOperation = operationDefinition =>
     operationDefinition.selectionSet.selections[0].name.value;
@@ -31,18 +48,29 @@ const context = async ({ req, res }) => {
   }
 
   const userTokenNotRequired = operationsConfig.publicOperations.includes(operationDefinition);
-  // const userTokenRequired = operationsConfig.authenticatedOperations.includes(operationName);
 
   if (userTokenNotRequired) {
     return {};
   }
 
   const token = req.headers.authorization || '';
+  console.log('req headers authorization', req.headers.authorization);
   const user = await getUser(token);
 
   if (!user) {
-    throwCustomError('User is not Authenticated', ErrorTypes.UNAUTHENTICATED);
+    throwCustomError(operationName, ErrorTypes.UNAUTHENTICATED);
   }
+
+  const { role } = await getUserById(user.userId);
+
+  if (role === EUserRoles.USER && operationsConfig.authenticatedOperations.includes(operationDefinition)) {
+    return user;
+  }
+  if (role === EUserRoles.ADMIN && operationsConfig.adminOperations.includes(operationDefinition)) {
+    return user;
+  }
+
+  throwCustomError('User is not Authorized', ErrorTypes.UNAUTHORIZED);
 
   // add the user to the context
   return user;

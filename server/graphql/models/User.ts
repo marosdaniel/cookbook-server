@@ -5,6 +5,7 @@ import { IRecipe } from './Recipe';
 export enum EUserRoles {
   USER = 'USER',
   ADMIN = 'ADMIN',
+  BLOGGER = 'BLOGGER',
 }
 interface IUser extends Document {
   id: string;
@@ -35,7 +36,7 @@ const userSchema = new Schema<IUser>({
     type: String,
     // enum: EUserRoles,
     enum: Object.values(EUserRoles),
-    default: EUserRoles.USER, // Fontos a "as EUserRoles" konverzió itt
+    default: EUserRoles.USER,
   },
 });
 
