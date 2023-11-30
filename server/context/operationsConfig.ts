@@ -7,6 +7,7 @@ const publicOperations = [
   'getUserByUserName',
   'createUser',
   'loginUser',
+  'addToFavoriteRecipes',
 ];
 
 const authenticatedOperations = [
@@ -21,7 +22,16 @@ const authenticatedOperations = [
 // TODO: add operations for blogger role
 const bloggerOperations = [...authenticatedOperations, ''];
 
-const adminOperations = [...bloggerOperations, 'deleteAllRecipes', 'deleteAllUsers'];
+const adminOperations = [
+  ...bloggerOperations,
+  'deleteAllRecipes',
+  'deleteAllUsers',
+  'getMetadataByType',
+  'getMetadataByKey',
+  'createMetadata',
+  'deleteMetadata',
+  'getAllUser',
+];
 
 const operationsConfig = {
   publicOperations,
