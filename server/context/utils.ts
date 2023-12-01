@@ -33,12 +33,14 @@ export const getUser = async (token: string, operationDefinition: string) => {
     }
 
     const { role } = authorizedUser;
-    const isAdmin = role === EUserRoles.ADMIN;
 
     if (role === EUserRoles.USER && operationsConfig.authenticatedOperations.includes(operationDefinition)) {
       return authorizedUser;
     }
-    if (isAdmin && operationsConfig.adminOperations.includes(operationDefinition)) {
+    if (role === EUserRoles.BLOGGER && operationsConfig.bloggerOperations.includes(operationDefinition)) {
+      return authorizedUser;
+    }
+    if (role === EUserRoles.ADMIN && operationsConfig.adminOperations.includes(operationDefinition)) {
       return authorizedUser;
     }
 

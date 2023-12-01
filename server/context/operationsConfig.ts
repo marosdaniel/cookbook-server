@@ -37,6 +37,7 @@ const adminOperations = [
 const operationsConfig = {
   publicOperations,
   authenticatedOperations,
+  bloggerOperations,
   adminOperations,
 };
 
