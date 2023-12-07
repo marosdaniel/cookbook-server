@@ -29,25 +29,25 @@
   "dependencies": {
     "@apollo/server": "^4.9.5",
     "@graphql-tools/graphql-file-loader": "^8.0.0",
-    "@graphql-tools/load": "^8.0.0",
-    "@graphql-tools/merge": "^9.0.0",
+    "@graphql-tools/load": "^8.0.1",
+    "@graphql-tools/merge": "^9.0.1",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "graphql": "^16.8.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.0.1",
+    "mongoose": "^8.0.2",
     "validator": "^13.11.0"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.16",
-    "@types/node": "^20.9.2",
-    "eslint": "^8.54.0",
-    "eslint-config-prettier": "^9.0.0",
+    "@types/cors": "^2.8.17",
+    "@types/node": "^20.10.4",
+    "eslint": "^8.55.0",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-node": "^11.1.0",
-    "nodemon": "^3.0.1",
+    "nodemon": "^3.0.2",
     "ts-node": "^10.9.1",
     "tsc-alias": "1.8.8",
-    "typescript": "^5.2.2"
+    "typescript": "^5.3.3"
   }
 }
