@@ -45,6 +45,7 @@ type Recipe {
   createdBy: String!
   author: User!
   preparationTime: Int
+  imgSrc: String
 }
 
 input RecipeCreateInput {
@@ -54,6 +55,7 @@ input RecipeCreateInput {
   preparationSteps: [PreparationStepInput]!
   preparationTime: Int
   categories: [CategoryInput]!
+  imgSrc: String
 }
 
 input RecipeEditInput {
@@ -63,6 +65,7 @@ input RecipeEditInput {
   preparationSteps: [PreparationStepInput]!
   preparationTime: Int
   categories: [CategoryInput]!
+  imgSrc: String
 }
 
 type RecipeData {

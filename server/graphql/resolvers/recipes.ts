@@ -53,7 +53,7 @@ const recipeResolvers = {
   Mutation: {
     async createRecipe(
       _,
-      { recipeCreateInput: { title, description, ingredients, preparationSteps, preparationTime, categories } },
+      { recipeCreateInput: { title, description, ingredients, preparationSteps, preparationTime, categories, imgSrc } },
       context,
     ) {
       try {
@@ -72,6 +72,7 @@ const recipeResolvers = {
           updatedAt: newDate,
           preparationTime,
           categories,
+          imgSrc,
         });
 
         const res = await newRecipe.save();
@@ -87,7 +88,10 @@ const recipeResolvers = {
 
     async editRecipe(
       _,
-      { id, recipeEditInput: { title, description, ingredients, preparationSteps, preparationTime, categories } },
+      {
+        id,
+        recipeEditInput: { title, description, ingredients, preparationSteps, preparationTime, categories, imgSrc },
+      },
       context,
     ) {
       try {
@@ -109,6 +113,7 @@ const recipeResolvers = {
           preparationTime,
           updatedAt: new Date().toISOString(),
           categories,
+          imgSrc,
         };
 
         if (ingredients) {
