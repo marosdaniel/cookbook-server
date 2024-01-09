@@ -28,7 +28,7 @@ export interface IRecipe {
   updatedAt: string;
   author: { type: typeof Schema.Types.ObjectId; ref: string };
   preparationTime?: number;
-  categories: TCategory[];
+  category: TCategory;
   imgSrc?: string;
 }
 
@@ -43,7 +43,7 @@ const recipeSchema = new Schema<IRecipe>({
   updatedAt: String,
   author: { type: Schema.Types.ObjectId, ref: 'User' },
   preparationTime: Number,
-  categories: [{ name: String, key: String }],
+  category: { name: String, key: String },
   imgSrc: String,
 });
 
