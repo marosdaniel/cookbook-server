@@ -35,12 +35,26 @@ input CategoryInput {
   label: String!
 }
 
+type Label {
+  _id: ID!
+  name: String!
+  key: String!
+  label: String!
+}
+
+input LabelInput {
+  name: String!
+  key: String!
+  label: String!
+}
+
 type Recipe {
   _id: ID!
   title: String!
   description: String
   ingredients: [Ingredient]!
   category: Category!
+  labels: [Label]!
   preparationSteps: [PreparationStep]!
   createdAt: String!
   updatedAt: String!
@@ -57,6 +71,7 @@ input RecipeCreateInput {
   preparationSteps: [PreparationStepInput]!
   preparationTime: Int
   category: CategoryInput!
+  labels: [LabelInput]!
   imgSrc: String
 }
 
@@ -67,6 +82,7 @@ input RecipeEditInput {
   preparationSteps: [PreparationStepInput]!
   preparationTime: Int
   category: CategoryInput!
+  labels: [LabelInput]!
   imgSrc: String
 }
 
@@ -85,7 +101,7 @@ type Query {
 
 type Mutation {
   createRecipe(recipeCreateInput: RecipeCreateInput): Recipe!
+  editRecipe(id: ID!, recipeEditInput: RecipeEditInput): Recipe!
   deleteRecipe(id: ID!): Boolean! # true if  something was deleted, false if the id was not found or deleted
   deleteAllRecipes: Int! # number of deleted recipes
-  editRecipe(id: ID!, recipeEditInput: RecipeEditInput): Recipe!
 }

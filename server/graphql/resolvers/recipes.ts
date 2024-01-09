@@ -53,7 +53,18 @@ const recipeResolvers = {
   Mutation: {
     async createRecipe(
       _,
-      { recipeCreateInput: { title, description, ingredients, preparationSteps, preparationTime, category, imgSrc } },
+      {
+        recipeCreateInput: {
+          title,
+          description,
+          ingredients,
+          preparationSteps,
+          preparationTime,
+          category,
+          imgSrc,
+          labels,
+        },
+      },
       context,
     ) {
       try {
@@ -73,6 +84,7 @@ const recipeResolvers = {
           preparationTime,
           category,
           imgSrc,
+          labels,
         });
 
         const res = await newRecipe.save();
@@ -88,7 +100,19 @@ const recipeResolvers = {
 
     async editRecipe(
       _,
-      { id, recipeEditInput: { title, description, ingredients, preparationSteps, preparationTime, category, imgSrc } },
+      {
+        id,
+        recipeEditInput: {
+          title,
+          description,
+          ingredients,
+          preparationSteps,
+          preparationTime,
+          category,
+          imgSrc,
+          labels,
+        },
+      },
       context,
     ) {
       try {
@@ -102,6 +126,14 @@ const recipeResolvers = {
           throwCustomError('Recipe not found', ErrorTypes.NOT_FOUND);
         }
 
+        if (existingRecipe.createdBy !== user.userName) {
+          throwCustomError('You have no rights to do that operation', ErrorTypes.UNAUTHENTICATED);
+        }
+
+        if (!title || !description || !ingredients || !preparationSteps || !preparationTime || !category) {
+          throwCustomError('All fields are required', ErrorTypes.BAD_REQUEST);
+        }
+
         const updatedFields = {
           title,
           description,
@@ -110,6 +142,7 @@ const recipeResolvers = {
           preparationTime,
           updatedAt: new Date().toISOString(),
           category,
+          labels,
           imgSrc,
         };
 
