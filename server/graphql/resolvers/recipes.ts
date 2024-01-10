@@ -59,18 +59,30 @@ const recipeResolvers = {
           description,
           ingredients,
           preparationSteps,
-          preparationTime,
           category,
           imgSrc,
           labels,
+          cookingTime,
+          difficultyLevel,
         },
       },
       context,
     ) {
+      if (
+        !title ||
+        !description ||
+        !ingredients ||
+        !preparationSteps ||
+        !category ||
+        !cookingTime ||
+        !difficultyLevel
+      ) {
+        throwCustomError('All fields are required', ErrorTypes.BAD_REQUEST);
+      }
       try {
-        const user = await User.findById(context.userId);
+        const user = await User.findById(context._id);
         if (!user) {
-          throwCustomError('Unauthenticated operation', ErrorTypes.UNAUTHENTICATED);
+          throwCustomError('Unauthenticated operation - no user found', ErrorTypes.UNAUTHENTICATED);
         }
         const newDate = new Date().toISOString();
         const newRecipe = new Recipe({
@@ -81,10 +93,11 @@ const recipeResolvers = {
           createdBy: user.userName,
           createdAt: newDate,
           updatedAt: newDate,
-          preparationTime,
           category,
           imgSrc,
           labels,
+          cookingTime,
+          difficultyLevel,
         });
 
         const res = await newRecipe.save();
@@ -107,10 +120,11 @@ const recipeResolvers = {
           description,
           ingredients,
           preparationSteps,
-          preparationTime,
           category,
           imgSrc,
           labels,
+          cookingTime,
+          difficultyLevel,
         },
       },
       context,
@@ -118,7 +132,7 @@ const recipeResolvers = {
       try {
         const user = await User.findById(context.userId);
         if (!user) {
-          throwCustomError('Unauthenticated operation', ErrorTypes.UNAUTHENTICATED);
+          throwCustomError('Unauthenticated operation - no user found', ErrorTypes.UNAUTHENTICATED);
         }
 
         const existingRecipe = await Recipe.findById(id);
@@ -130,7 +144,15 @@ const recipeResolvers = {
           throwCustomError('You have no rights to do that operation', ErrorTypes.UNAUTHENTICATED);
         }
 
-        if (!title || !description || !ingredients || !preparationSteps || !preparationTime || !category) {
+        if (
+          !title ||
+          !description ||
+          !ingredients ||
+          !preparationSteps ||
+          !cookingTime ||
+          !category ||
+          !difficultyLevel
+        ) {
           throwCustomError('All fields are required', ErrorTypes.BAD_REQUEST);
         }
 
@@ -139,11 +161,12 @@ const recipeResolvers = {
           description,
           ingredients,
           preparationSteps,
-          preparationTime,
           updatedAt: new Date().toISOString(),
           category,
           labels,
           imgSrc,
+          cookingTime,
+          difficultyLevel,
         };
 
         if (ingredients) {
@@ -178,7 +201,7 @@ const recipeResolvers = {
     async deleteRecipe(_, { id }, context) {
       const user = await User.findById(context.userId);
       if (!user) {
-        throwCustomError('Unauthenticated operation', ErrorTypes.UNAUTHENTICATED);
+        throwCustomError('Unauthenticated operation - no user found', ErrorTypes.UNAUTHENTICATED);
       }
       const wasDeleted = await Recipe.deleteOne({ _id: id });
       if (!wasDeleted) {
@@ -194,7 +217,7 @@ const recipeResolvers = {
     async deleteAllRecipes(_, {}, context) {
       const user = await User.findById(context.userId);
       if (!user) {
-        throwCustomError('Unauthenticated operation', ErrorTypes.UNAUTHENTICATED);
+        throwCustomError('Unauthenticated operation - no user found', ErrorTypes.UNAUTHENTICATED);
       }
 
       if (user.role !== EUserRoles.ADMIN) {

@@ -1,6 +1,15 @@
 import { model, Schema } from 'mongoose';
+
+enum TMetadataType {
+  LEVEL = 'level',
+  CATEGORY = 'category',
+  UNIT = 'unit',
+  LABEL = 'label',
+}
+
 export interface IIngredient {
-  id: string;
+  _id: string;
+  localId: string;
   name: string;
   quantity: number;
   unit: string;
@@ -15,6 +24,22 @@ export interface IPreparationStep {
 type TCategory = {
   name: string;
   key: string;
+  label: string;
+  type: TMetadataType.CATEGORY;
+};
+
+type TDifficultyLevel = {
+  key: string;
+  label: string;
+  name: string;
+  type: TMetadataType.LEVEL;
+};
+
+type TLabel = {
+  key: string;
+  name: string;
+  label: string;
+  type: TMetadataType.LABEL;
 };
 
 export interface IRecipe {
@@ -27,9 +52,11 @@ export interface IRecipe {
   createdBy: string;
   updatedAt: string;
   author: { type: typeof Schema.Types.ObjectId; ref: string };
-  preparationTime?: number;
   category: TCategory;
   imgSrc?: string;
+  cookingTime: number;
+  difficultyLevel: TDifficultyLevel;
+  labels?: TLabel[];
 }
 
 const recipeSchema = new Schema<IRecipe>({
@@ -37,14 +64,16 @@ const recipeSchema = new Schema<IRecipe>({
   title: { type: String, required: true },
   description: String,
   preparationSteps: [{ description: String, order: Number }],
-  ingredients: [{ name: String, quantity: Number, unit: String }],
+  ingredients: [{ name: String, quantity: Number, unit: String, localId: String }],
   createdAt: String,
   createdBy: { type: String, required: true },
   updatedAt: String,
   author: { type: Schema.Types.ObjectId, ref: 'User' },
-  preparationTime: Number,
-  category: { name: String, key: String },
+  category: { name: String, key: String, label: String, type: String },
   imgSrc: String,
+  cookingTime: { type: Number, required: true },
+  difficultyLevel: { key: String, label: String, name: String, type: String },
+  labels: [{ key: String, name: String, label: String, type: String }],
 });
 
 export const Recipe = model('Recipe', recipeSchema);

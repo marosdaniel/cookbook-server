@@ -1,11 +1,13 @@
 type Ingredient {
   _id: ID!
+  localId: String!
   name: String!
   quantity: Float!
   unit: String!
 }
 
 input IngredientInput {
+  localId: String!
   name: String!
   quantity: Float!
   unit: String!
@@ -27,12 +29,14 @@ type Category {
   name: String!
   key: String!
   label: String!
+  type: String!
 }
 
 input CategoryInput {
   name: String!
   key: String!
   label: String!
+  type: String!
 }
 
 type Label {
@@ -40,12 +44,28 @@ type Label {
   name: String!
   key: String!
   label: String!
+  type: String!
 }
 
 input LabelInput {
   name: String!
   key: String!
   label: String!
+}
+
+type DifficultyLevel {
+  _id: ID!
+  name: String!
+  key: String!
+  label: String!
+  type: String!
+}
+
+input DifficultyLevelInput {
+  name: String!
+  key: String!
+  label: String!
+  type: String!
 }
 
 type Recipe {
@@ -60,8 +80,9 @@ type Recipe {
   updatedAt: String!
   createdBy: String!
   author: User!
-  preparationTime: Int
   imgSrc: String
+  cookingTime: Int!
+  difficultyLevel: DifficultyLevel!
 }
 
 input RecipeCreateInput {
@@ -69,10 +90,11 @@ input RecipeCreateInput {
   description: String
   ingredients: [IngredientInput]!
   preparationSteps: [PreparationStepInput]!
-  preparationTime: Int
   category: CategoryInput!
   labels: [LabelInput]!
   imgSrc: String
+  cookingTime: Int!
+  difficultyLevel: DifficultyLevelInput!
 }
 
 input RecipeEditInput {
@@ -80,10 +102,11 @@ input RecipeEditInput {
   description: String
   ingredients: [IngredientInput]
   preparationSteps: [PreparationStepInput]!
-  preparationTime: Int
   category: CategoryInput!
   labels: [LabelInput]!
   imgSrc: String
+  cookingTime: Int!
+  difficultyLevel: DifficultyLevelInput!
 }
 
 type RecipeData {
