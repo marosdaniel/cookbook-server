@@ -42,6 +42,27 @@ type TLabel = {
   type: TMetadataType.LABEL;
 };
 
+const categorySchema = new Schema({
+  name: String,
+  key: String,
+  label: String,
+  type: String,
+});
+
+const difficultyLevelSchema = new Schema({
+  name: String,
+  key: String,
+  label: String,
+  type: String,
+});
+
+const labelSchema = new Schema({
+  name: String,
+  key: String,
+  label: String,
+  type: String,
+});
+
 export interface IRecipe {
   id: string;
   title: string;
@@ -69,11 +90,11 @@ const recipeSchema = new Schema<IRecipe>({
   createdBy: { type: String, required: true },
   updatedAt: String,
   author: { type: Schema.Types.ObjectId, ref: 'User' },
-  category: { name: String, key: String, label: String, type: String },
+  category: categorySchema,
   imgSrc: String,
   cookingTime: { type: Number, required: true },
-  difficultyLevel: { key: String, label: String, name: String, type: String },
-  labels: [{ key: String, name: String, label: String, type: String }],
+  difficultyLevel: difficultyLevelSchema,
+  labels: [labelSchema],
 });
 
 export const Recipe = model('Recipe', recipeSchema);
