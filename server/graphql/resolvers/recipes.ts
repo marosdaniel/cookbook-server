@@ -175,15 +175,6 @@ const recipeResolvers = {
           servings,
         };
 
-        if (ingredients) {
-          const updatedIngredients = existingRecipe.ingredients.map(existingIngredient => {
-            const newIngredient = ingredients.find(newIngredient => newIngredient.name === existingIngredient.name);
-            return newIngredient || existingIngredient;
-          });
-
-          updatedFields.ingredients = updatedIngredients;
-        }
-
         const updatedRecipe = await Recipe.findByIdAndUpdate(id, { $set: updatedFields }, { new: true });
 
         const usersToUpdate = await User.find({ 'favoriteRecipes._id': id });
