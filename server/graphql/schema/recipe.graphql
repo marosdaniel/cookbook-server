@@ -83,6 +83,7 @@ type Recipe {
   imgSrc: String
   cookingTime: Int!
   difficultyLevel: DifficultyLevel!
+  servings: Int!
 }
 
 input RecipeCreateInput {
@@ -95,6 +96,7 @@ input RecipeCreateInput {
   imgSrc: String
   cookingTime: Int!
   difficultyLevel: DifficultyLevelInput!
+  servings: Int!
 }
 
 input RecipeEditInput {
@@ -107,6 +109,7 @@ input RecipeEditInput {
   imgSrc: String
   cookingTime: Int!
   difficultyLevel: DifficultyLevelInput!
+  servings: Int!
 }
 
 type RecipeData {

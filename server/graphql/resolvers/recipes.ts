@@ -1,6 +1,6 @@
 import { Recipe, User } from '../models';
-import throwCustomError, { ErrorTypes } from '../../helpers/error-handler.helper';
 import { EUserRoles } from '../models/User';
+import throwCustomError, { ErrorTypes } from '../../helpers/error-handler.helper';
 
 const recipeResolvers = {
   Query: {
@@ -64,6 +64,7 @@ const recipeResolvers = {
           labels,
           cookingTime,
           difficultyLevel,
+          servings,
         },
       },
       context,
@@ -75,7 +76,8 @@ const recipeResolvers = {
         !preparationSteps ||
         !category ||
         !cookingTime ||
-        !difficultyLevel
+        !difficultyLevel ||
+        !servings
       ) {
         throwCustomError('All fields are required', ErrorTypes.BAD_REQUEST);
       }
@@ -98,6 +100,7 @@ const recipeResolvers = {
           labels,
           cookingTime,
           difficultyLevel,
+          servings,
         });
 
         const res = await newRecipe.save();
@@ -125,12 +128,13 @@ const recipeResolvers = {
           labels,
           cookingTime,
           difficultyLevel,
+          servings,
         },
       },
       context,
     ) {
       try {
-        const user = await User.findById(context.userId);
+        const user = await User.findById(context._id);
         if (!user) {
           throwCustomError('Unauthenticated operation - no user found', ErrorTypes.UNAUTHENTICATED);
         }
@@ -151,7 +155,8 @@ const recipeResolvers = {
           !preparationSteps ||
           !cookingTime ||
           !category ||
-          !difficultyLevel
+          !difficultyLevel ||
+          !servings
         ) {
           throwCustomError('All fields are required', ErrorTypes.BAD_REQUEST);
         }
@@ -167,6 +172,7 @@ const recipeResolvers = {
           imgSrc,
           cookingTime,
           difficultyLevel,
+          servings,
         };
 
         if (ingredients) {
