@@ -51,6 +51,7 @@ input LabelInput {
   name: String!
   key: String!
   label: String!
+  type: String!
 }
 
 type DifficultyLevel {
