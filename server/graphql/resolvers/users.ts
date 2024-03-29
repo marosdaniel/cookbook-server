@@ -9,7 +9,7 @@ import { EUserRoles } from '../models/User';
 const userResolvers = {
   Query: {
     async getUserById(_, { id }: { id: string }) {
-      const user = await User.findById(id).populate('favoriteRecipes');
+      const user = await User.findById(id).populate('favoriteRecipes').populate('recipes');
       if (!user) {
         throw new GraphQLError('User not found.', {
           extensions: {
