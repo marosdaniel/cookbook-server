@@ -7,7 +7,6 @@ const publicOperations = [
   'getUserByUserName',
   'createUser',
   'loginUser',
-  'addToFavoriteRecipes',
   'getMetadataByType',
   'getMetadataByType',
 ];
@@ -19,6 +18,9 @@ const authenticatedOperations = [
   'deleteRecipe',
   'deleteUser',
   'editUser',
+  'changePassword',
+  'addToFavoriteRecipes',
+  'removeFromFavoriteRecipes',
   'getMetadataByKey',
 ];
 

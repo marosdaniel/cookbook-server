@@ -46,6 +46,6 @@ export const getUser = async (token: string, operationDefinition: string) => {
 
     throwCustomError('User is not Authorized', ErrorTypes.UNAUTHORIZED);
   } catch (error) {
-    throwCustomError('Authentication failed', ErrorTypes.UNAUTHENTICATED);
+    throwCustomError(error, ErrorTypes.UNAUTHENTICATED);
   }
 };

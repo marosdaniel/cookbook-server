@@ -28,8 +28,13 @@ input UserRegisterInput {
 input UserEditInput {
   firstName: String
   lastName: String
-  password: String
   locale: String
+}
+
+input PasswordEditInput {
+  currentPassword: String!
+  newPassword: String!
+  confirmNewPassword: String!
 }
 
 input UserLoginInput {
@@ -53,7 +58,9 @@ type Mutation {
   loginUser(userLoginInput: UserLoginInput!): AuthPayload!
   createUser(userRegisterInput: UserRegisterInput): User!
   editUser(id: ID!, userEditInput: UserEditInput!): User!
+  changePassword(id: ID!, passwordEditInput: PasswordEditInput!): Boolean!
   deleteUser(id: ID!): Boolean!
   deleteAllUser: Int!
   addToFavoriteRecipes(userId: ID!, recipeId: ID!): User!
+  removeFromFavoriteRecipes(userId: ID!, recipeId: ID!): User!
 }

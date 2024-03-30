@@ -130,6 +130,7 @@ const userResolvers = {
         userId: user._id.toString(),
       };
     },
+    // EDIT USER
     async editUser(_, { id, userEditInput }) {
       try {
         const user = await User.findById(id);
@@ -156,6 +157,39 @@ const userResolvers = {
           },
         });
       }
+    },
+    // CHANGE PASSWORD
+    async changePassword(_, { id, passwordEditInput }) {
+      const { currentPassword, newPassword, confirmNewPassword } = passwordEditInput;
+
+      const user = await User.findById(id).populate('favoriteRecipes').populate('recipes');
+
+      if (!user) {
+        throw new GraphQLError('User not found.', {
+          extensions: {
+            code: 401,
+          },
+        });
+      }
+
+      if (!currentPassword || !newPassword || !confirmNewPassword) {
+        throw new Error('Please fill in all fields');
+      }
+
+      if (newPassword !== confirmNewPassword) {
+        throw new Error('Passwords do not match');
+      }
+
+      const isMatch = await bcrypt.compare(currentPassword, user.password);
+      if (!isMatch) {
+        throw new Error('Invalid password');
+      }
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+      await user.save();
+
+      return true;
     },
     async deleteUser(_, { id }) {
       const wasDeleted = await User.deleteOne({ _id: id });
@@ -192,6 +226,24 @@ const userResolvers = {
       }
 
       user.favoriteRecipes.push(recipeId);
+      await user.save();
+
+      return user;
+    },
+
+    removeFromFavoriteRecipes: async (_, { userId, recipeId }) => {
+      // TO BE VERIFIED
+      const user = await User.findById(userId);
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const recipe = await Recipe.findById(recipeId);
+      if (!recipe) {
+        throw new Error('Recipe not found');
+      }
+
+      user.favoriteRecipes = user.favoriteRecipes.filter(favoriteRecipe => favoriteRecipe.id.toString() !== recipeId);
       await user.save();
 
       return user;

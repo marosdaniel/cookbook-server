@@ -41,8 +41,9 @@
     "validator": "^13.11.0"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
-    "@types/node": "^20.11.30",
+    "@types/node": "^20.12.2",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-node": "^11.1.0",
