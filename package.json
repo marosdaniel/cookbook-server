@@ -37,13 +37,13 @@
     "dotenv": "^16.4.5",
     "graphql": "^16.8.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.2.4",
+    "mongoose": "^8.3.0",
     "validator": "^13.11.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
-    "@types/node": "^20.12.2",
+    "@types/node": "^20.12.4",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-node": "^11.1.0",
