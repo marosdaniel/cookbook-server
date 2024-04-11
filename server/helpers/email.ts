@@ -3,6 +3,19 @@ dotenv.config();
 import nodemailer from 'nodemailer';
 import { randomFillSync } from 'crypto';
 
+const getEmailContent = (
+  resetToken: string,
+) => `<div style="font-family: 'Noto Sans JP', sans-serif; max-width: 600px; margin: 0 auto;">
+<div style="background-color: #f9f9f9; padding: 20px;">
+  <h2 style="color: #333;">Dear Cookbooker,</h2>
+  <p style="color: #333;">You've requested a password reset. Please click on the following link to reset your password:</p>
+  <p style="text-align: center;"><a href="${process.env.APP_DOMAIN}/reset-password/${resetToken}" style="display: inline-block; padding: 10px 20px; background-color: #088F8F; color: #fff; text-decoration: none; border-radius: 5px;">Reset Password</a></p>
+  <p style="color: #333;">If you didn't request a password reset, you can safely ignore this email.</p>
+  <p style="color: #333; margin-top: 40px;">Cookbook Support</p>
+</div>
+</div>
+`;
+
 const generateResetToken = (): string => {
   const tokenBuffer = Buffer.alloc(20);
   randomFillSync(tokenBuffer);
@@ -29,7 +42,7 @@ const sendPasswordResetEmail = async (email: string, resetToken: string) => {
     },
     to: email,
     subject: 'Reset your Cookbook password',
-    html: `<p>Dear user,</p><p>Please click on the following link to reset your password:</p><a href="http://yourapp.com/reset-password/${resetToken}">Reset Password</a>`,
+    html: getEmailContent(resetToken),
   };
 
   try {
