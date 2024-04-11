@@ -9,6 +9,7 @@ const publicOperations = [
   'loginUser',
   'getMetadataByType',
   'getMetadataByType',
+  'resetPassword',
 ];
 
 const authenticatedOperations = [

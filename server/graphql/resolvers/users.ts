@@ -1,14 +1,62 @@
+import dotenv from 'dotenv';
+
 import { GraphQLError } from 'graphql';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import validator from 'validator';
+import nodemailer from 'nodemailer';
+import { randomFillSync } from 'crypto';
 
 import { Recipe, User } from '../models';
 import { EUserRoles } from '../models/User';
+import { TRequestPasswordReset, TGetUserById } from './types';
+
+const generateResetToken = (): string => {
+  const tokenBuffer = Buffer.alloc(20);
+  randomFillSync(tokenBuffer);
+  return tokenBuffer.toString('hex');
+};
+
+const getMailCredentials = () => {
+  return {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD,
+  };
+};
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false, // Use `true` for port 465, `false` for all other ports
+  auth: {
+    user: getMailCredentials().user,
+    pass: getMailCredentials().pass,
+  },
+});
+
+const sendPasswordResetEmail = async (email: string, resetToken: string) => {
+  const mailOptions = {
+    from: {
+      name: 'Cookbook Support',
+      address: process.env.EMAIL_USER,
+    },
+    to: email,
+    subject: 'Reset your Cookbook password',
+    html: `<p>Dear user,</p><p>Please click on the following link to reset your password:</p><a href="http://yourapp.com/reset-password/${resetToken}">Reset Password</a>`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log('E-mail sent successfully.');
+  } catch (error) {
+    console.error('An error occurred while sending the email:', error);
+  }
+};
 
 const userResolvers = {
   Query: {
-    async getUserById(_, { id }: { id: string }) {
+    async getUserById(_, { id }: TGetUserById) {
       const user = await User.findById(id).populate('favoriteRecipes').populate('recipes');
       if (!user) {
         throw new GraphQLError('User not found.', {
@@ -53,11 +101,11 @@ const userResolvers = {
         throw new Error('Invalid email');
       }
 
-      if (!validator.isLength(password, { min: 5, max: 20, allow_whitespace: false })) {
+      if (!validator.isLength(password, { min: 5, max: 20 })) {
         throw new Error('Password must be at least 5, maximum 20 characters');
       }
 
-      if (!validator.isLength(userName, { min: 3, max: 20, allow_whitespace: false })) {
+      if (!validator.isLength(userName, { min: 3, max: 20 })) {
         throw new Error('Password must be at least 5, maximum 20 characters');
       }
 
@@ -191,6 +239,28 @@ const userResolvers = {
 
       return true;
     },
+    // RESET PASSWORD
+    resetPassword: async (_, { email }: TRequestPasswordReset) => {
+      const user = await User.findOne({ email });
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      const resetToken = generateResetToken();
+      const resetExpires = new Date();
+      resetExpires.setHours(resetExpires.getHours() + 1);
+
+      user.resetPasswordToken = resetToken;
+      user.resetPasswordExpires = resetExpires;
+      await user.save();
+
+      console.log(`Reset token: ${resetToken}`);
+
+      sendPasswordResetEmail(user.email, user.resetPasswordToken);
+
+      return true;
+    },
+
     async deleteUser(_, { id }) {
       const wasDeleted = await User.deleteOne({ _id: id });
       if (!wasDeleted) {
@@ -202,6 +272,7 @@ const userResolvers = {
       }
       return wasDeleted.deletedCount; // 1 if deleted, 0 if not
     },
+
     async deleteAllUser() {
       const res = await User.deleteMany({});
       return res.deletedCount;

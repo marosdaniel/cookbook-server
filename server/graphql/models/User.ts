@@ -19,6 +19,8 @@ interface IUser extends Document {
   favoriteRecipes: IRecipe[];
   locale: string;
   role: EUserRoles;
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date;
 }
 
 const userSchema = new Schema<IUser>({
@@ -38,6 +40,8 @@ const userSchema = new Schema<IUser>({
     enum: Object.values(EUserRoles),
     default: EUserRoles.USER,
   },
+  resetPasswordToken: String,
+  resetPasswordExpires: Date,
 });
 
 export const User = model<IUser>('User', userSchema);

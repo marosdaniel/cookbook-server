@@ -1,10 +1,10 @@
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { EUserRoles, User } from '../../server/graphql/models/User';
 
 import throwCustomError, { ErrorTypes } from '../helpers/error-handler.helper';
 import operationsConfig from './operationsConfig';
 
-const getUserById = async (userId: string) => {
+const getUserById = async (userId: string | JwtPayload) => {
   try {
     if (userId) {
       const authorizedUser = await User.findById(userId);
@@ -27,7 +27,8 @@ export const getUser = async (token: string, operationDefinition: string) => {
       throwCustomError('User is not authenticated', ErrorTypes.UNAUTHENTICATED);
     }
 
-    const authorizedUser = await getUserById(user.userId);
+    const userId: string = (user as JwtPayload).userId;
+    const authorizedUser = await getUserById(userId);
     if (!authorizedUser) {
       throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
     }

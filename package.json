@@ -38,12 +38,16 @@
     "graphql": "^16.8.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.3.1",
+    "nodemailer": "^6.9.13",
     "validator": "^13.11.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.12.7",
+    "@types/nodemailer": "^6.4.14",
+    "@types/validator": "^13.11.9",
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-node": "^11.1.0",
