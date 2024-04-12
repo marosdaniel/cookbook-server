@@ -208,13 +208,31 @@ const userResolvers = {
       user.resetPasswordExpires = resetExpires;
       await user.save();
 
-      console.log(`Reset token: ${resetToken}`);
-
       sendPasswordResetEmail(user.email, user.resetPasswordToken);
 
       return true;
     },
+    // SET NEW PASSWORD
+    setNewPassword: async (_, { token, newPassword }) => {
+      const user = await User.findOne({
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: Date.now() },
+      });
+      if (!user) {
+        throw new Error('Invalid or expired reset token');
+      }
 
+      if (!validator.isLength(newPassword, { min: 5, max: 20 })) {
+        throw new Error('Password must be at least 5, maximum 20 characters');
+      }
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+      await user.save();
+      return true;
+    },
+    // DELETE USER
     async deleteUser(_, { id }) {
       const wasDeleted = await User.deleteOne({ _id: id });
       if (!wasDeleted) {
@@ -226,11 +244,12 @@ const userResolvers = {
       }
       return wasDeleted.deletedCount; // 1 if deleted, 0 if not
     },
-
+    // DELETE ALL USERS
     async deleteAllUser() {
       const res = await User.deleteMany({});
       return res.deletedCount;
     },
+    // ADD TO FAVORITE RECIPES
     addToFavoriteRecipes: async (_, { userId, recipeId }) => {
       const user = await User.findById(userId);
       if (!user) {
@@ -255,7 +274,7 @@ const userResolvers = {
 
       return user;
     },
-
+    // REMOVE FROM FAVORITE RECIPES
     removeFromFavoriteRecipes: async (_, { userId, recipeId }) => {
       // TO BE VERIFIED
       const user = await User.findById(userId);

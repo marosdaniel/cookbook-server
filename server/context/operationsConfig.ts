@@ -10,6 +10,7 @@ const publicOperations = [
   'getMetadataByType',
   'getMetadataByType',
   'resetPassword',
+  'setNewPassword',
 ];
 
 const authenticatedOperations = [

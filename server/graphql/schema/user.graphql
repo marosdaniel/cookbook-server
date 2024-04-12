@@ -63,6 +63,7 @@ type Mutation {
 
   changePassword(id: ID!, passwordEditInput: PasswordEditInput!): Boolean!
   resetPassword(email: String!): Boolean!
+  setNewPassword(token: String!, newPassword: String!): Boolean!
 
   deleteUser(id: ID!): Boolean!
   deleteAllUser: Int!
