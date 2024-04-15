@@ -6,7 +6,13 @@ import validator from 'validator';
 import { generateResetToken, sendPasswordResetEmail } from '../../helpers/email';
 import { Recipe, User } from '../models';
 import { EUserRoles } from '../models/User';
-import { TRequestPasswordReset, TGetUserById } from './types';
+import {
+  TRequestPasswordReset,
+  TGetUserById,
+  TUserRegisterInput,
+  TGetAllUserInput,
+  TGetUserByNameInput,
+} from './types';
 
 const userResolvers = {
   Query: {
@@ -21,7 +27,7 @@ const userResolvers = {
       }
       return user;
     },
-    async getUserByUserName(_, { userName }: { userName: string }) {
+    async getUserByUserName(_, { userName }: TGetUserByNameInput) {
       const user = await User.findOne({ userName }).populate('favoriteRecipes').populate('recipes');
 
       if (!user) {
@@ -33,7 +39,7 @@ const userResolvers = {
       }
       return user;
     },
-    async getAllUser(_, { limit }: { limit: number }) {
+    async getAllUser(_, { limit }: TGetAllUserInput) {
       const users = await User.find().sort({ createdAt: -1 }).limit(limit);
       if (!users || users.length === 0) {
         throw new GraphQLError('User not found.', {
@@ -46,7 +52,7 @@ const userResolvers = {
     },
   },
   Mutation: {
-    async createUser(_, { userRegisterInput: { firstName, lastName, userName, email, password } }) {
+    async createUser(_, { userRegisterInput: { firstName, lastName, userName, email, password } }: TUserRegisterInput) {
       if (!firstName || !lastName || !userName || !email || !password) {
         throw new Error('Please fill in all fields');
       }

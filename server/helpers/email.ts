@@ -9,7 +9,7 @@ const getEmailContent = (
 <div style="background-color: #f9f9f9; padding: 20px;">
   <h2 style="color: #333;">Dear Cookbooker,</h2>
   <p style="color: #333;">You've requested a password reset. Please click on the following link to reset your password:</p>
-  <p style="text-align: center;"><a href="${process.env.APP_DOMAIN}/reset-password/${resetToken}" style="display: inline-block; padding: 10px 20px; background-color: #088F8F; color: #fff; text-decoration: none; border-radius: 5px;">Reset Password</a></p>
+  <p style="text-align: center;"><a href="${process.env.FE_DOMAIN}/new-password/${resetToken}" style="display: inline-block; padding: 10px 20px; background-color: #088F8F; color: #fff; text-decoration: none; border-radius: 5px;">Reset Password</a></p>
   <p style="color: #333;">If you didn't request a password reset, you can safely ignore this email.</p>
   <p style="color: #333; margin-top: 40px;">Cookbook Support</p>
 </div>
