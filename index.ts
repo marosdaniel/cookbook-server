@@ -42,6 +42,7 @@ app.use(
       'https://teal-light-gazelle.cyclic.app',
       'https://cookbook-client-sepia.vercel.app',
       'https://studio.apollographql.com',
+      'https://cookbook-server-drab.vercel.app',
     ],
     credentials: true,
   }),
