@@ -65,6 +65,7 @@ const recipeResolvers = {
           cookingTime,
           difficultyLevel,
           servings,
+          youtubeLink,
         },
       },
       context,
@@ -101,6 +102,7 @@ const recipeResolvers = {
           cookingTime,
           difficultyLevel,
           servings,
+          youtubeLink,
         });
 
         const res = await newRecipe.save();
@@ -129,6 +131,7 @@ const recipeResolvers = {
           cookingTime,
           difficultyLevel,
           servings,
+          youtubeLink,
         },
       },
       context,
@@ -173,6 +176,7 @@ const recipeResolvers = {
           cookingTime,
           difficultyLevel,
           servings,
+          youtubeLink,
         };
 
         const updatedRecipe = await Recipe.findByIdAndUpdate(id, { $set: updatedFields }, { new: true });
@@ -205,7 +209,7 @@ const recipeResolvers = {
         throw new Error('Recipe not found');
       }
 
-      // remove recipe from user's favorite recipes
+      // TODO: remove recipe from user's favorite recipes
       // to be verified
       await User.updateMany({}, { $pull: { favoriteRecipes: id } });
 

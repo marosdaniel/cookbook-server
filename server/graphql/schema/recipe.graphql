@@ -85,6 +85,7 @@ type Recipe {
   cookingTime: Int!
   difficultyLevel: DifficultyLevel!
   servings: Int!
+  youtubeLink: String
 }
 
 input RecipeCreateInput {
@@ -98,6 +99,7 @@ input RecipeCreateInput {
   cookingTime: Int!
   difficultyLevel: DifficultyLevelInput!
   servings: Int!
+  youtubeLink: String
 }
 
 input RecipeEditInput {
@@ -111,6 +113,7 @@ input RecipeEditInput {
   cookingTime: Int!
   difficultyLevel: DifficultyLevelInput!
   servings: Int!
+  youtubeLink: String
 }
 
 type RecipeData {

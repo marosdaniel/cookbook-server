@@ -79,6 +79,7 @@ export interface IRecipe {
   difficultyLevel: TDifficultyLevel;
   labels?: TLabel[];
   servings: number;
+  youtubeLink?: string;
 }
 
 const recipeSchema = new Schema<IRecipe>({
@@ -97,6 +98,7 @@ const recipeSchema = new Schema<IRecipe>({
   difficultyLevel: difficultyLevelSchema,
   labels: [labelSchema],
   servings: { type: Number, default: 1 },
+  youtubeLink: String,
 });
 
 export const Recipe = model('Recipe', recipeSchema);
