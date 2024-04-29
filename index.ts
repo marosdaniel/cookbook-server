@@ -7,9 +7,9 @@ import cors from 'cors';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
-import { loadSchema } from '@graphql-tools/load';
-
+import userSchema from './server/graphql/schema/userSchema';
+import recipeSchema from './server/graphql/schema/recipeSchema';
+import metadataSchema from './server/graphql/schema/metadataSchema';
 import resolvers from './server/graphql/resolvers/index.js';
 import context from './server/context/index.js';
 
@@ -18,14 +18,10 @@ dotenv.config();
 const MONGO_DB = process.env.MONGO_URI;
 const PORT: number = +process.env.PORT || 8080;
 
-const schema = await loadSchema('server/graphql/**/*.graphql', {
-  loaders: [new GraphQLFileLoader()],
-});
-
 const app = express();
 const httpServer = http.createServer(app);
 const server = new ApolloServer({
-  typeDefs: schema,
+  typeDefs: [userSchema, recipeSchema, metadataSchema],
   resolvers,
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 });
@@ -33,7 +29,7 @@ const server = new ApolloServer({
 await server.start();
 
 app.use(
-  '/',
+  '/graphql',
   cors<cors.CorsRequest>({
     // origin: '*',
     origin: [
@@ -42,7 +38,6 @@ app.use(
       'https://teal-light-gazelle.cyclic.app',
       'https://cookbook-client-sepia.vercel.app',
       'https://studio.apollographql.com',
-      'https://cookbook-server-drab.vercel.app',
     ],
     credentials: true,
   }),
