@@ -1,0 +1,73 @@
+enum UserRole {
+  ADMIN
+  USER
+  BLOGGER
+}
+
+type User {
+  _id: ID!
+  firstName: String!
+  lastName: String!
+  userName: String!
+  email: String!
+  password: String!
+  recipes: [Recipe!]!
+  favoriteRecipes: [Recipe!]!
+  locale: String!
+  role: UserRole!
+  resetPasswordToken: String
+  resetPasswordExpires: String
+}
+
+input UserRegisterInput {
+  firstName: String!
+  lastName: String!
+  userName: String!
+  email: String!
+  password: String!
+}
+
+input UserEditInput {
+  firstName: String
+  lastName: String
+  locale: String
+}
+
+input PasswordEditInput {
+  currentPassword: String!
+  newPassword: String!
+  confirmNewPassword: String!
+}
+
+input UserLoginInput {
+  userNameOrEmail: String!
+  password: String!
+}
+
+type AuthPayload {
+  token: String!
+  user: User!
+  userId: ID!
+}
+
+type Query {
+  getUserById(id: ID!): User!
+  getUserByUserName(userName: String!): User!
+  getAllUser: [User]!
+}
+
+type Mutation {
+  loginUser(userLoginInput: UserLoginInput!): AuthPayload!
+  createUser(userRegisterInput: UserRegisterInput): User!
+  editUser(id: ID!, userEditInput: UserEditInput!): User!
+
+  changePassword(id: ID!, passwordEditInput: PasswordEditInput!): Boolean!
+  resetPassword(email: String!): Boolean!
+  setNewPassword(token: String!, newPassword: String!): Boolean!
+
+  deleteUser(id: ID!): Boolean!
+  deleteAllUser: Int!
+
+  addToFavoriteRecipes(userId: ID!, recipeId: ID!): User!
+  removeFromFavoriteRecipes(userId: ID!, recipeId: ID!): User!
+}
