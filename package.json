@@ -11,7 +11,7 @@
     "start": "node dist/index.js",
     "build": "rm -rf dist && tsc && tsc-alias",
     "compile": "tsc",
-    "dev": "nodemon --exec ts-node ./index.ts",
+    "dev": "nodemon --exec ts-node api/index.ts",
     "lint": "eslint server --ext .js,.jsx,.ts,.tsx",
     "update-packages": "npx npm-check-updates",
     "vercel-build": "npm run build"
@@ -31,6 +31,8 @@
     "@graphql-tools/graphql-file-loader": "^8.0.1",
     "@graphql-tools/load": "^8.0.2",
     "@graphql-tools/merge": "^9.0.3",
+    "apollo-server-core": "^3.13.0",
+    "apollo-server-micro": "^3.13.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
@@ -48,12 +50,14 @@
     "@types/node": "^20.12.7",
     "@types/nodemailer": "^6.4.14",
     "@types/validator": "^13.11.9",
+    "@vercel/node": "^3.0.28",
     "eslint": "^9.1.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-node": "^11.1.0",
     "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
     "tsc-alias": "1.8.8",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "vercel": "^34.1.7"
   }
 }
