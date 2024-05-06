@@ -55,12 +55,8 @@ app.use(
   }),
 );
 
-mongoose
-  .connect(MONGO_DB.toString())
-  .then(() => {
-    console.log('Connected to MongoDB...');
-  })
-  .then(() => {
-    new Promise<void>(resolve => httpServer.listen({ port: PORT }, resolve));
-    console.log(`🚀 Server ready!`);
-  });
+mongoose.connect(MONGO_DB.toString()).then(() => {
+  console.log('Connected to MongoDB...');
+  httpServer.listen({ port: PORT });
+  console.log(`🚀 Server ready!`);
+});
