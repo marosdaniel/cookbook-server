@@ -38,7 +38,7 @@
     "dotenv": "^16.4.5",
     "graphql": "^16.8.1",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.3.4",
+    "mongoose": "^8.4.0",
     "nodemailer": "^6.9.13",
     "validator": "^13.12.0"
   },
@@ -46,15 +46,15 @@
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/jsonwebtoken": "^9.0.6",
-    "@types/node": "^20.12.11",
+    "@types/node": "^20.12.12",
     "@types/nodemailer": "^6.4.15",
-    "@types/validator": "^13.11.9",
-    "eslint": "^9.2.0",
+    "@types/validator": "^13.11.10",
+    "eslint": "^9.3.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-node": "^11.1.0",
     "nodemon": "^3.1.0",
     "ts-node": "^10.9.2",
-    "tsc-alias": "1.8.8",
+    "tsc-alias": "1.8.10",
     "typescript": "^5.4.5"
   }
 }
