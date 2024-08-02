@@ -43,7 +43,7 @@ app.use(
       'https://cookbook-client-sepia.vercel.app',
       'https://studio.apollographql.com',
       'https://cookbook-server-drab.vercel.app',
-      'http://localhost:5173/',
+      'http://localhost:5173',
       'https://cookbook-vite.vercel.app/',
     ],
     credentials: true,
