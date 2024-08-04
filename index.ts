@@ -44,7 +44,7 @@ app.use(
       'https://studio.apollographql.com',
       'https://cookbook-server-drab.vercel.app',
       'http://localhost:5173',
-      'https://cookbook-vite.vercel.app/',
+      'https://cookbook-vite.vercel.app',
     ],
     credentials: true,
   }),
