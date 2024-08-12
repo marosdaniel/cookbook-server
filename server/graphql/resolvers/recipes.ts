@@ -49,6 +49,16 @@ const recipeResolvers = {
 
       return { recipes, totalRecipes };
     },
+    // async getFavoriteRecipes(_, { userId, limit }: { userId: string; limit: number }) {
+    //   const user = await User.findById(userId).populate({
+    //     path: 'favoriteRecipes',
+    //     options: { sort: { createdAt: -1 }, limit },
+    //   });
+    //   if (!user) {
+    //     throw new Error('User not found');
+    //   }
+    //   return user.favoriteRecipes;
+    // },
   },
   Mutation: {
     async createRecipe(
@@ -185,7 +195,9 @@ const recipeResolvers = {
         await Promise.all(
           usersToUpdate.map(async userToUpdate => {
             const updatedFavoriteRecipes = userToUpdate.favoriteRecipes.map(favoriteRecipe => {
-              return favoriteRecipe.id.toString() === id ? { ...favoriteRecipe, ...updatedFields } : favoriteRecipe;
+              return favoriteRecipe.id.toString() === id
+                ? { ...favoriteRecipe, ...updatedFields, updatedAt: new Date() }
+                : favoriteRecipe;
             });
 
             userToUpdate.favoriteRecipes = updatedFavoriteRecipes;

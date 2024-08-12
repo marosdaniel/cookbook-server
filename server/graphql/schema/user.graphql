@@ -4,6 +4,8 @@ enum UserRole {
   BLOGGER
 }
 
+scalar DateTime
+
 type User {
   _id: ID!
   firstName: String!
@@ -17,6 +19,7 @@ type User {
   role: UserRole!
   resetPasswordToken: String
   resetPasswordExpires: String
+  createdAt: DateTime!
 }
 
 input UserRegisterInput {

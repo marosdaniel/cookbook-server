@@ -77,8 +77,8 @@ type Recipe {
   category: Category!
   labels: [Label]!
   preparationSteps: [PreparationStep]!
-  createdAt: String!
-  updatedAt: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   createdBy: String!
   author: User!
   imgSrc: String

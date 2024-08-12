@@ -69,9 +69,9 @@ export interface IRecipe {
   description?: string;
   preparationSteps: IPreparationStep[];
   ingredients: IIngredient[];
-  createdAt: string;
+  createdAt: Date;
+  updatedAt: Date;
   createdBy: string;
-  updatedAt: string;
   author: { type: typeof Schema.Types.ObjectId; ref: string };
   category: TCategory;
   imgSrc?: string;
@@ -88,9 +88,9 @@ const recipeSchema = new Schema<IRecipe>({
   description: String,
   preparationSteps: [{ description: String, order: Number }],
   ingredients: [{ name: String, quantity: Number, unit: String, localId: String }],
-  createdAt: String,
-  createdBy: { type: String, required: true },
-  updatedAt: String,
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+  createdBy: String,
   author: { type: Schema.Types.ObjectId, ref: 'User' },
   category: categorySchema,
   imgSrc: String,
@@ -99,6 +99,11 @@ const recipeSchema = new Schema<IRecipe>({
   labels: [labelSchema],
   servings: { type: Number, default: 1 },
   youtubeLink: String,
+});
+
+recipeSchema.pre('save', function (next) {
+  this.updatedAt = new Date();
+  next();
 });
 
 export const Recipe = model('Recipe', recipeSchema);
