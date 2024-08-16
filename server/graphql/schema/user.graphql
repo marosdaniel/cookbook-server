@@ -1,10 +1,9 @@
+scalar DateTime
 enum UserRole {
   ADMIN
   USER
   BLOGGER
 }
-
-scalar DateTime
 
 type User {
   _id: ID!
