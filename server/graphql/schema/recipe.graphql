@@ -7,6 +7,7 @@ type Ingredient {
 }
 
 input IngredientInput {
+  _id: ID
   localId: String!
   name: String!
   quantity: Float!
@@ -20,6 +21,7 @@ type PreparationStep {
 }
 
 input PreparationStepInput {
+  _id: ID
   description: String!
   order: Int!
 }

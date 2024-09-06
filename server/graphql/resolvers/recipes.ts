@@ -174,12 +174,51 @@ const recipeResolvers = {
           throwCustomError('All fields are required', ErrorTypes.BAD_REQUEST);
         }
 
+        const updatedIngredients = ingredients.map(ingredient => {
+          if (ingredient._id) {
+            const existingIngredient = existingRecipe.ingredients.find(ingr => ingr._id.toString() === ingredient._id);
+
+            if (existingIngredient) {
+              existingIngredient.name = ingredient.name;
+              existingIngredient.quantity = ingredient.quantity;
+              existingIngredient.unit = ingredient.unit;
+            }
+            return existingIngredient;
+          } else {
+            return {
+              localId: ingredient.localId,
+              name: ingredient.name,
+              quantity: ingredient.quantity,
+              unit: ingredient.unit,
+            };
+          }
+        });
+
+        const updatedPreparationSteps = preparationSteps.map(step => {
+          if (step._id) {
+            const existingStep = existingRecipe.preparationSteps.find(
+              existingStep => existingStep._id.toString() === step._id,
+            );
+
+            if (existingStep) {
+              existingStep.description = step.description;
+              existingStep.order = step.order;
+            }
+            return existingStep;
+          } else {
+            return {
+              description: step.description,
+              order: step.order,
+            };
+          }
+        });
+
         const updatedFields = {
           title,
           description,
-          ingredients,
-          preparationSteps,
-          updatedAt: new Date().toISOString(),
+          ingredients: updatedIngredients,
+          preparationSteps: updatedPreparationSteps,
+          updatedAt: new Date(),
           category,
           labels,
           imgSrc,
@@ -210,7 +249,6 @@ const recipeResolvers = {
         throw new Error(error);
       }
     },
-
     async deleteRecipe(_, { id }, context) {
       const user = await User.findById(context.userId);
       if (!user) {
@@ -225,7 +263,7 @@ const recipeResolvers = {
       // to be verified
       await User.updateMany({}, { $pull: { favoriteRecipes: id } });
 
-      return wasDeleted.deletedCount; // 1 if deleted, 0 if not
+      return wasDeleted.deletedCount;
     },
     async deleteAllRecipes(_, {}, context) {
       const user = await User.findById(context.userId);

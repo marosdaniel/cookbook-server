@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose';
+import { model, ObjectId, Schema } from 'mongoose';
 
 enum TMetadataType {
   LEVEL = 'level',
@@ -8,7 +8,7 @@ enum TMetadataType {
 }
 
 export interface IIngredient {
-  _id: string;
+  _id: ObjectId;
   localId: string;
   name: string;
   quantity: number;
@@ -16,7 +16,7 @@ export interface IIngredient {
 }
 
 export interface IPreparationStep {
-  _id: string;
+  _id: ObjectId;
   description: string;
   order: number;
 }
@@ -42,6 +42,25 @@ type TLabel = {
   type: TMetadataType.LABEL;
 };
 
+export interface IRecipe {
+  id: string;
+  title: string;
+  description?: string;
+  preparationSteps: IPreparationStep[];
+  ingredients: IIngredient[];
+  createdAt: Date;
+  updatedAt: Date;
+  createdBy: string;
+  author: { type: typeof Schema.Types.ObjectId; ref: string };
+  category: TCategory;
+  imgSrc?: string;
+  cookingTime: number;
+  difficultyLevel: TDifficultyLevel;
+  labels?: TLabel[];
+  servings: number;
+  youtubeLink?: string;
+}
+
 const categorySchema = new Schema({
   name: String,
   key: String,
@@ -63,31 +82,26 @@ const labelSchema = new Schema({
   type: String,
 });
 
-export interface IRecipe {
-  id: string;
-  title: string;
-  description?: string;
-  preparationSteps: IPreparationStep[];
-  ingredients: IIngredient[];
-  createdAt: Date;
-  updatedAt: Date;
-  createdBy: string;
-  author: { type: typeof Schema.Types.ObjectId; ref: string };
-  category: TCategory;
-  imgSrc?: string;
-  cookingTime: number;
-  difficultyLevel: TDifficultyLevel;
-  labels?: TLabel[];
-  servings: number;
-  youtubeLink?: string;
-}
+const ingredientSchema = new Schema<IIngredient>({
+  _id: { type: Schema.Types.ObjectId, auto: true },
+  localId: { type: String, required: true },
+  name: { type: String, required: true },
+  quantity: { type: Number, required: true },
+  unit: { type: String, required: true },
+});
+
+const preparationStepSchema = new Schema<IPreparationStep>({
+  _id: { type: Schema.Types.ObjectId, auto: true },
+  description: { type: String, required: true },
+  order: { type: Number, required: true },
+});
 
 const recipeSchema = new Schema<IRecipe>({
   id: String,
   title: { type: String, required: true },
   description: String,
-  preparationSteps: [{ description: String, order: Number }],
-  ingredients: [{ name: String, quantity: Number, unit: String, localId: String }],
+  preparationSteps: [preparationStepSchema],
+  ingredients: [ingredientSchema],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   createdBy: String,
