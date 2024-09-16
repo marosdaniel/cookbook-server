@@ -1,4 +1,4 @@
-import { Recipe, User } from '../models';
+import { Metadata, Recipe, User } from '../models';
 import { EUserRoles } from '../models/User';
 import throwCustomError, { ErrorTypes } from '../../helpers/error-handler.helper';
 
@@ -213,6 +213,8 @@ const recipeResolvers = {
           }
         });
 
+        const labelsFromDb = await Metadata.find({ key: { $in: labels.map(label => label.value) } });
+
         const updatedFields = {
           title,
           description,
@@ -220,7 +222,7 @@ const recipeResolvers = {
           preparationSteps: updatedPreparationSteps,
           updatedAt: new Date(),
           category,
-          labels,
+          labels: labelsFromDb,
           imgSrc,
           cookingTime,
           difficultyLevel,
@@ -239,7 +241,8 @@ const recipeResolvers = {
                 : favoriteRecipe;
             });
 
-            userToUpdate.favoriteRecipes = updatedFavoriteRecipes;
+            userToUpdate.set('favoriteRecipes', updatedFavoriteRecipes);
+
             await userToUpdate.save();
           }),
         );
@@ -249,6 +252,7 @@ const recipeResolvers = {
         throw new Error(error);
       }
     },
+
     async deleteRecipe(_, { id }, context) {
       const user = await User.findById(context.userId);
       if (!user) {

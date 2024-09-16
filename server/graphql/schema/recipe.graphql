@@ -56,6 +56,11 @@ input LabelInput {
   type: String!
 }
 
+input LabelInputPartial {
+  value: String!
+  label: String!
+}
+
 type DifficultyLevel {
   _id: ID!
   name: String!
@@ -96,7 +101,7 @@ input RecipeCreateInput {
   ingredients: [IngredientInput]!
   preparationSteps: [PreparationStepInput]!
   category: CategoryInput!
-  labels: [LabelInput]!
+  labels: [LabelInputPartial]!
   imgSrc: String
   cookingTime: Int!
   difficultyLevel: DifficultyLevelInput!
@@ -110,7 +115,7 @@ input RecipeEditInput {
   ingredients: [IngredientInput]
   preparationSteps: [PreparationStepInput]!
   category: CategoryInput!
-  labels: [LabelInput]!
+  labels: [LabelInputPartial]!
   imgSrc: String
   cookingTime: Int!
   difficultyLevel: DifficultyLevelInput!
