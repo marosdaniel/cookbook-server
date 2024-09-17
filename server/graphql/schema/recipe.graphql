@@ -34,13 +34,6 @@ type Category {
   type: String!
 }
 
-input CategoryInput {
-  name: String!
-  key: String!
-  label: String!
-  type: String!
-}
-
 type Label {
   _id: ID!
   name: String!
@@ -49,27 +42,13 @@ type Label {
   type: String!
 }
 
-input LabelInput {
-  name: String!
-  key: String!
-  label: String!
-  type: String!
-}
-
-input LabelInputPartial {
+input MetaInputPartial {
   value: String!
   label: String!
 }
 
 type DifficultyLevel {
   _id: ID!
-  name: String!
-  key: String!
-  label: String!
-  type: String!
-}
-
-input DifficultyLevelInput {
   name: String!
   key: String!
   label: String!
@@ -100,25 +79,25 @@ input RecipeCreateInput {
   description: String
   ingredients: [IngredientInput]!
   preparationSteps: [PreparationStepInput]!
-  category: CategoryInput!
-  labels: [LabelInputPartial]!
+  category: MetaInputPartial!
+  labels: [MetaInputPartial]
   imgSrc: String
   cookingTime: Int!
-  difficultyLevel: DifficultyLevelInput!
+  difficultyLevel: MetaInputPartial!
   servings: Int!
   youtubeLink: String
 }
 
 input RecipeEditInput {
-  title: String
+  title: String!
   description: String
-  ingredients: [IngredientInput]
+  ingredients: [IngredientInput]!
   preparationSteps: [PreparationStepInput]!
-  category: CategoryInput!
-  labels: [LabelInputPartial]!
+  category: MetaInputPartial!
+  labels: [MetaInputPartial]
   imgSrc: String
   cookingTime: Int!
-  difficultyLevel: DifficultyLevelInput!
+  difficultyLevel: MetaInputPartial!
   servings: Int!
   youtubeLink: String
 }

@@ -97,6 +97,11 @@ const recipeResolvers = {
         if (!user) {
           throwCustomError('Unauthenticated operation - no user found', ErrorTypes.UNAUTHENTICATED);
         }
+
+        const labelsFromDb = await Metadata.find({ key: { $in: labels.map(label => label.value) } });
+        const categoryFromDb = await Metadata.findOne({ key: category.value });
+        const difficultyLevelFromDb = await Metadata.findOne({ key: difficultyLevel.value });
+
         const newDate = new Date().toISOString();
         const newRecipe = new Recipe({
           title,
@@ -106,11 +111,11 @@ const recipeResolvers = {
           createdBy: user.userName,
           createdAt: newDate,
           updatedAt: newDate,
-          category,
+          category: categoryFromDb,
           imgSrc,
-          labels,
+          labels: labelsFromDb,
           cookingTime,
-          difficultyLevel,
+          difficultyLevel: difficultyLevelFromDb,
           servings,
           youtubeLink,
         });
@@ -175,6 +180,8 @@ const recipeResolvers = {
         }
 
         const labelsFromDb = await Metadata.find({ key: { $in: labels.map(label => label.value) } });
+        const categoryFromDb = await Metadata.findOne({ key: category.value });
+        const difficultyLevelFromDb = await Metadata.findOne({ key: difficultyLevel.value });
 
         const updatedFields = {
           title,
@@ -182,11 +189,11 @@ const recipeResolvers = {
           ingredients,
           preparationSteps,
           updatedAt: new Date(),
-          category,
+          category: categoryFromDb,
           labels: labelsFromDb,
           imgSrc,
           cookingTime,
-          difficultyLevel,
+          difficultyLevel: difficultyLevelFromDb,
           servings,
           youtubeLink,
         };
