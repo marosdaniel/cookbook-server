@@ -7,6 +7,7 @@ export enum EUserRoles {
   ADMIN = 'ADMIN',
   BLOGGER = 'BLOGGER',
 }
+
 interface IUser extends Document {
   id: string;
   firstName: string;
@@ -15,8 +16,8 @@ interface IUser extends Document {
   email: string;
   password: string;
   createdAt: Date;
-  recipes: IRecipe[];
-  favoriteRecipes: IRecipe[];
+  recipes?: IRecipe[];
+  favoriteRecipes?: IRecipe[];
   locale: string;
   role: EUserRoles;
   resetPasswordToken?: string;
@@ -31,20 +32,17 @@ const userSchema = new Schema<IUser>({
   email: String,
   password: String,
   createdAt: { type: Date, default: Date.now },
-  recipes: [{ type: Schema.Types.ObjectId, ref: 'Recipe' }],
-  favoriteRecipes: [{ type: Schema.Types.ObjectId, ref: 'Recipe' }],
+  recipes: [{ type: Schema.Types.ObjectId, ref: 'Recipe', default: [] }],
+  favoriteRecipes: [{ type: Schema.Types.ObjectId, ref: 'Recipe', default: [] }],
   locale: String,
   role: {
     type: String,
-    // enum: EUserRoles,
     enum: Object.values(EUserRoles),
     default: EUserRoles.USER,
   },
   resetPasswordToken: String,
   resetPasswordExpires: Date,
 });
-
-export const User = model<IUser>('User', userSchema);
 
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
@@ -60,3 +58,5 @@ userSchema.pre('save', async function (next) {
     return next(error);
   }
 });
+
+export const User = model<IUser>('User', userSchema);

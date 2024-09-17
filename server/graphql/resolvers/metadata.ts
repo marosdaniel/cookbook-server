@@ -18,6 +18,14 @@ const metadataResolvers = {
         throw new Error('No metadata found for this key');
       }
     },
+    getAllMetadata: async () => {
+      try {
+        const metadata = await Metadata.find({});
+        return metadata;
+      } catch (error) {
+        throw new Error('Error fetching metadata');
+      }
+    },
   },
   Mutation: {
     createMetadata: async (_, { createMetadataInput: { key, label, type, name } }) => {

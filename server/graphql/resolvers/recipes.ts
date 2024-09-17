@@ -174,52 +174,13 @@ const recipeResolvers = {
           throwCustomError('All fields are required', ErrorTypes.BAD_REQUEST);
         }
 
-        const updatedIngredients = ingredients.map(ingredient => {
-          if (ingredient._id) {
-            const existingIngredient = existingRecipe.ingredients.find(ingr => ingr._id.toString() === ingredient._id);
-
-            if (existingIngredient) {
-              existingIngredient.name = ingredient.name;
-              existingIngredient.quantity = ingredient.quantity;
-              existingIngredient.unit = ingredient.unit;
-            }
-            return existingIngredient;
-          } else {
-            return {
-              localId: ingredient.localId,
-              name: ingredient.name,
-              quantity: ingredient.quantity,
-              unit: ingredient.unit,
-            };
-          }
-        });
-
-        const updatedPreparationSteps = preparationSteps.map(step => {
-          if (step._id) {
-            const existingStep = existingRecipe.preparationSteps.find(
-              existingStep => existingStep._id.toString() === step._id,
-            );
-
-            if (existingStep) {
-              existingStep.description = step.description;
-              existingStep.order = step.order;
-            }
-            return existingStep;
-          } else {
-            return {
-              description: step.description,
-              order: step.order,
-            };
-          }
-        });
-
         const labelsFromDb = await Metadata.find({ key: { $in: labels.map(label => label.value) } });
 
         const updatedFields = {
           title,
           description,
-          ingredients: updatedIngredients,
-          preparationSteps: updatedPreparationSteps,
+          ingredients,
+          preparationSteps,
           updatedAt: new Date(),
           category,
           labels: labelsFromDb,
@@ -232,21 +193,6 @@ const recipeResolvers = {
 
         const updatedRecipe = await Recipe.findByIdAndUpdate(id, { $set: updatedFields }, { new: true });
 
-        const usersToUpdate = await User.find({ 'favoriteRecipes._id': id });
-        await Promise.all(
-          usersToUpdate.map(async userToUpdate => {
-            const updatedFavoriteRecipes = userToUpdate.favoriteRecipes.map(favoriteRecipe => {
-              return favoriteRecipe.id.toString() === id
-                ? { ...favoriteRecipe, ...updatedFields, updatedAt: new Date() }
-                : favoriteRecipe;
-            });
-
-            userToUpdate.set('favoriteRecipes', updatedFavoriteRecipes);
-
-            await userToUpdate.save();
-          }),
-        );
-
         return updatedRecipe;
       } catch (error) {
         throw new Error(error);
@@ -258,17 +204,17 @@ const recipeResolvers = {
       if (!user) {
         throwCustomError('Unauthenticated operation - no user found', ErrorTypes.UNAUTHENTICATED);
       }
+
       const wasDeleted = await Recipe.deleteOne({ _id: id });
-      if (!wasDeleted) {
+      if (wasDeleted.deletedCount === 0) {
         throw new Error('Recipe not found');
       }
 
-      // TODO: remove recipe from user's favorite recipes
-      // to be verified
       await User.updateMany({}, { $pull: { favoriteRecipes: id } });
 
       return wasDeleted.deletedCount;
     },
+
     async deleteAllRecipes(_, {}, context) {
       const user = await User.findById(context.userId);
       if (!user) {

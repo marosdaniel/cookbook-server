@@ -14,7 +14,8 @@ input CreateMetadataInput {
 
 type Query {
   getMetadataByType(type: String!): [Metadata]!
-  getMetadataByKey(key: String!): Metadata
+  getMetadataByKey(key: String!): Metadata!
+  getAllMetadata: [Metadata]!
 }
 
 type Mutation {
