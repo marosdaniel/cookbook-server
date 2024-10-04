@@ -59,6 +59,9 @@ export interface IRecipe {
   labels?: TLabel[];
   servings: number;
   youtubeLink?: string;
+
+  averageRating: number;
+  ratingsCount: number;
 }
 
 const categorySchema = new Schema({
@@ -113,6 +116,8 @@ const recipeSchema = new Schema<IRecipe>({
   labels: [labelSchema],
   servings: { type: Number, default: 1 },
   youtubeLink: String,
+  averageRating: { type: Number, default: 0.0 },
+  ratingsCount: { type: Number, default: 0 },
 });
 
 recipeSchema.pre('save', function (next) {
@@ -120,4 +125,4 @@ recipeSchema.pre('save', function (next) {
   next();
 });
 
-export const Recipe = model('Recipe', recipeSchema);
+export const Recipe = model<IRecipe>('Recipe', recipeSchema);

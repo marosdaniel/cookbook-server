@@ -1,3 +1,17 @@
+type Rating {
+  _id: ID!
+  recipeId: ID!
+  userId: ID!
+  ratingValue: Float!
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+input RatingInput {
+  recipeId: ID!
+  ratingValue: Float!
+}
+
 type Ingredient {
   _id: ID!
   localId: String!
@@ -66,12 +80,15 @@ type Recipe {
   createdAt: DateTime!
   updatedAt: DateTime!
   createdBy: String!
-  author: User!
+  # author: User!
   imgSrc: String
   cookingTime: Int!
   difficultyLevel: DifficultyLevel!
   servings: Int!
   youtubeLink: String
+  averageRating: Float!
+  ratingsCount: Int!
+  userRating: Float
 }
 
 input RecipeCreateInput {
@@ -112,7 +129,8 @@ type Query {
   getRecipes(limit: Int): RecipeData!
   getRecipesByTitle(title: String!, limit: Int): RecipeData!
   getRecipesByUserName(userName: String!, limit: Int): RecipeData!
-  getRecipesByUserId(userId: ID!, limit: Int): RecipeData!
+  getRecipesByUserId(userId: ID!, limit: Int): RecipeData! # deprecated
+  getRatingsByRecipe(recipeId: ID!): [Rating!]!
 }
 
 type Mutation {
@@ -120,4 +138,5 @@ type Mutation {
   editRecipe(id: ID!, recipeEditInput: RecipeEditInput): Recipe!
   deleteRecipe(id: ID!): Boolean! # true if  something was deleted, false if the id was not found or deleted
   deleteAllRecipes: Int! # number of deleted recipes
+  rateRecipe(ratingInput: RatingInput!): Recipe!
 }

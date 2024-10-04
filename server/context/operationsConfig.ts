@@ -3,6 +3,7 @@ const publicOperations = [
   'getRecipeById',
   'getRecipesByTitle',
   'getRecipesByUserName',
+  'getRecipesByUserId',
   'getUserById',
   'getUserByUserName',
   'createUser',
@@ -12,6 +13,7 @@ const publicOperations = [
   'getAllMetadata',
   'resetPassword',
   'setNewPassword',
+  'getRatingsByRecipe',
 ];
 
 const authenticatedOperations = [
@@ -25,6 +27,7 @@ const authenticatedOperations = [
   'addToFavoriteRecipes',
   'removeFromFavoriteRecipes',
   'getMetadataByKey',
+  'rateRecipe',
 ];
 
 // TODO: add operations for blogger role

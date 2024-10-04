@@ -1,53 +1,153 @@
 import { Metadata, Recipe, User } from '../models';
 import { EUserRoles } from '../models/User';
 import throwCustomError, { ErrorTypes } from '../../helpers/error-handler.helper';
+import { Rating } from '../models/Rating';
+import { getRecipeById, getRecipesByTitle } from './recipe';
 
 const recipeResolvers = {
   Query: {
-    async getRecipeById(_, { _id }: { _id: string }) {
-      const recipe = await Recipe.findById(_id);
-      if (!recipe) {
-        throw new Error('Recipe not found');
-      }
-      return recipe;
-    },
-    async getRecipes(_, { limit }: { limit: number }) {
+    getRecipeById,
+    getRecipesByTitle,
+    async getRecipes(_, { limit }, context) {
       const totalRecipes = await Recipe.countDocuments();
-      const recipes = await Recipe.find().sort({ createdAt: -1 }).limit(limit);
-      if (!recipes) {
-        throw new Error('Recipes not found');
-      }
-      return { recipes, totalRecipes };
-    },
-    async getRecipesByTitle(_, { title, limit }: { title: string; limit: number }) {
-      const totalRecipes = await Recipe.countDocuments();
-      const recipes = await Recipe.find({ title: { $regex: new RegExp(title, 'i') } })
-        .sort({ createdAt: -1 })
-        .limit(limit);
+
+      const recipes = await Recipe.find().sort({ createdAt: -1 }).limit(limit).lean();
+
       if (!recipes || recipes.length === 0) {
         throw new Error('Recipes not found');
       }
-      return { recipes, totalRecipes };
+
+      const userId = context._id;
+
+      const recipesWithRatings = await Promise.all(
+        recipes.map(async recipe => {
+          const ratings = await Rating.find({ recipeId: recipe._id });
+
+          let averageRating = 0.0;
+          let ratingsCount = 0;
+          let userRating = null;
+
+          if (ratings.length > 0) {
+            ratingsCount = ratings.length;
+            const totalRating = ratings.reduce((sum, rating) => sum + rating.ratingValue, 0);
+            averageRating = totalRating / ratingsCount;
+          }
+
+          if (userId) {
+            const userRatingRecord = await Rating.findOne({
+              recipeId: recipe._id,
+              userId: userId,
+            });
+
+            if (userRatingRecord) {
+              userRating = userRatingRecord.ratingValue;
+            }
+          }
+
+          return {
+            ...recipe,
+            averageRating,
+            ratingsCount,
+            userRating,
+          };
+        }),
+      );
+
+      return { recipes: recipesWithRatings, totalRecipes };
     },
-    async getRecipesByUserName(_, { userName, limit }: { userName: string; limit: number }) {
+
+    async getRecipesByUserName(_, { userName, limit }, context) {
       const totalRecipes = await Recipe.countDocuments({ createdBy: userName });
-      const recipes = await Recipe.find({ createdBy: userName }).sort({ createdAt: -1 }).limit(limit);
+
+      const recipes = await Recipe.find({ createdBy: userName }).sort({ createdAt: -1 }).limit(limit).lean();
 
       if (!recipes || recipes.length === 0) {
         throw new Error('Recipes not found for this user');
       }
 
-      return { recipes, totalRecipes };
+      const userId = context._id;
+
+      const recipesWithRatings = await Promise.all(
+        recipes.map(async recipe => {
+          const ratings = await Rating.find({ recipeId: recipe._id });
+
+          let averageRating = 0.0;
+          let ratingsCount = 0;
+          let userRating = null;
+
+          if (ratings.length > 0) {
+            ratingsCount = ratings.length;
+            const totalRating = ratings.reduce((sum, rating) => sum + rating.ratingValue, 0);
+            averageRating = totalRating / ratingsCount;
+          }
+
+          if (userId) {
+            const userRatingRecord = await Rating.findOne({
+              recipeId: recipe._id,
+              userId: userId,
+            });
+
+            if (userRatingRecord) {
+              userRating = userRatingRecord.ratingValue;
+            }
+          }
+
+          return {
+            ...recipe,
+            averageRating,
+            ratingsCount,
+            userRating,
+          };
+        }),
+      );
+
+      return { recipes: recipesWithRatings, totalRecipes };
     },
-    async getRecipesByUserId(_, { userId, limit }: { userId: string; limit: number }) {
+    async getRecipesByUserId(_, { userId, limit }, context) {
       const totalRecipes = await Recipe.countDocuments({ createdBy: userId });
-      const recipes = await Recipe.find({ createdBy: userId }).sort({ createdAt: -1 }).limit(limit);
+      const recipes = await Recipe.find({ createdBy: userId }).sort({ createdAt: -1 }).limit(limit).lean();
 
       if (!recipes || recipes.length === 0) {
         throw new Error('Recipes not found for this user');
       }
 
-      return { recipes, totalRecipes };
+      const loggedInUserId = context._id;
+
+      const recipesWithRatings = await Promise.all(
+        recipes.map(async recipe => {
+          const ratings = await Rating.find({ recipeId: recipe._id });
+
+          let averageRating = 0.0;
+          let ratingsCount = 0;
+          let userRating = null;
+
+          if (ratings.length > 0) {
+            ratingsCount = ratings.length;
+            const totalRating = ratings.reduce((sum, rating) => sum + rating.ratingValue, 0);
+            averageRating = totalRating / ratingsCount;
+          }
+
+          if (loggedInUserId) {
+            const userRatingRecord = await Rating.findOne({
+              recipeId: recipe._id,
+              userId: loggedInUserId,
+            });
+
+            if (userRatingRecord) {
+              userRating = userRatingRecord.ratingValue;
+            }
+          }
+
+          return {
+            ...recipe,
+            averageRating,
+            ratingsCount,
+            userRating,
+          };
+        }),
+      );
+
+      return { recipes: recipesWithRatings, totalRecipes };
     },
     // async getFavoriteRecipes(_, { userId, limit }: { userId: string; limit: number }) {
     //   const user = await User.findById(userId).populate({
@@ -103,6 +203,7 @@ const recipeResolvers = {
         const difficultyLevelFromDb = await Metadata.findOne({ key: difficultyLevel.value });
 
         const newDate = new Date().toISOString();
+
         const newRecipe = new Recipe({
           title,
           description,
@@ -118,6 +219,8 @@ const recipeResolvers = {
           difficultyLevel: difficultyLevelFromDb,
           servings,
           youtubeLink,
+          averageRating: 0.0,
+          ratingsCount: 0,
         });
 
         const res = await newRecipe.save();
