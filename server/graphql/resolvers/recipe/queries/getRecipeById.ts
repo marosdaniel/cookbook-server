@@ -1,5 +1,5 @@
 import { IContext } from 'server/context/types';
-import { Recipe, Rating } from '../../models';
+import { Recipe, Rating } from '../../../models';
 
 interface IGetRecipeById {
   _id: string;

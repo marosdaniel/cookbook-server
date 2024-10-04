@@ -1,20 +1,10 @@
-import { IContext } from '../../../context/types';
-import { Recipe, Rating } from '../../models';
+import { Recipe, Rating } from '../../../models';
+import { IContext } from '../../../../context/types';
 
-interface IGetRecipesByTitle {
-  title: string;
-  limit: number;
-}
+export const getRecipes = async (_: any, { limit }: { limit: number }, context: IContext) => {
+  const totalRecipes = await Recipe.countDocuments();
 
-export const getRecipesByTitle = async (_: any, { title, limit }: IGetRecipesByTitle, context: IContext) => {
-  const totalRecipes = await Recipe.countDocuments({
-    title: { $regex: new RegExp(title, 'i') },
-  });
-
-  const recipes = await Recipe.find({ title: { $regex: new RegExp(title, 'i') } })
-    .sort({ createdAt: -1 })
-    .limit(limit)
-    .lean();
+  const recipes = await Recipe.find().sort({ createdAt: -1 }).limit(limit).lean();
 
   if (!recipes || recipes.length === 0) {
     throw new Error('Recipes not found');
