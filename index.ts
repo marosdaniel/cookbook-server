@@ -4,6 +4,7 @@ import express from 'express';
 import http from 'http';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import helmet from 'helmet';
 import { ApolloServer } from '@apollo/server';
 import { expressMiddleware } from '@apollo/server/express4';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
@@ -26,22 +27,19 @@ const schema = await loadSchema('server/graphql/**/*.graphql', {
 
 const app = express();
 const httpServer = http.createServer(app);
+
 const server = new ApolloServer({
   typeDefs: schema,
   resolvers,
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 });
 
-app.use(limiter);
-
 await server.start();
 
+app.use(helmet()); // Set security-related HTTP headers
 app.use(
-  '/',
   cors<cors.CorsRequest>({
-    // origin: '*',
     origin: [
-      'http://localhost:8080',
       'http://localhost:3000',
       'https://teal-light-gazelle.cyclic.app',
       'https://cookbook-client-sepia.vercel.app',
@@ -50,12 +48,15 @@ app.use(
       'http://localhost:5173',
       'https://cookbook-vite.vercel.app',
     ],
+    methods: ['GET', 'POST'],
     credentials: true,
   }),
-  // 50mb is the limit that `startStandaloneServer` uses, but you may configure this to suit your needs
+);
+
+app.use(limiter);
+
+app.use(
   bodyParser.json({ limit: '50mb' }),
-  // expressMiddleware accepts the same arguments:
-  // an Apollo Server instance and optional configuration options
   expressMiddleware(server, {
     context,
   }),
