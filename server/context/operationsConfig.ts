@@ -28,6 +28,7 @@ const authenticatedOperations = [
   'removeFromFavoriteRecipes',
   'getMetadataByKey',
   'rateRecipe',
+  'deleteRating',
 ];
 
 // TODO: add operations for blogger role
