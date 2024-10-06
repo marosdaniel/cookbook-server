@@ -7,8 +7,8 @@ import {
   getRecipesByTitle,
   getRecipesByUserId,
   getRecipesByUserName,
-} from './recipe/queries';
-import { createRecipe } from './recipe/mutations';
+  createRecipe,
+} from './recipe';
 
 const recipeResolvers = {
   Query: {

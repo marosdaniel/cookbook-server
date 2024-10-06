@@ -1,7 +1,8 @@
 import { Recipe, Rating } from '../../../models';
 import { IContext } from '../../../../context/types';
+import { IGetRecipes } from './types';
 
-export const getRecipes = async (_: any, { limit }: { limit: number }, context: IContext) => {
+export const getRecipes = async (_: any, { limit }: IGetRecipes, context: IContext) => {
   const totalRecipes = await Recipe.countDocuments();
 
   const recipes = await Recipe.find().sort({ createdAt: -1 }).limit(limit).lean();

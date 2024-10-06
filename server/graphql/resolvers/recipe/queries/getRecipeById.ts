@@ -1,9 +1,6 @@
 import { IContext } from 'server/context/types';
 import { Recipe, Rating } from '../../../models';
-
-interface IGetRecipeById {
-  _id: string;
-}
+import { IGetRecipeById } from './types';
 
 export const getRecipeById = async (_: any, { _id }: IGetRecipeById, context: IContext) => {
   const recipe = await Recipe.findById(_id).lean();

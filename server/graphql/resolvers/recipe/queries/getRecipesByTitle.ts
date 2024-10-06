@@ -1,10 +1,6 @@
 import { IContext } from '../../../../context/types';
 import { Recipe, Rating } from '../../../models';
-
-interface IGetRecipesByTitle {
-  title: string;
-  limit: number;
-}
+import { IGetRecipesByTitle } from './types';
 
 export const getRecipesByTitle = async (_: any, { title, limit }: IGetRecipesByTitle, context: IContext) => {
   const totalRecipes = await Recipe.countDocuments({

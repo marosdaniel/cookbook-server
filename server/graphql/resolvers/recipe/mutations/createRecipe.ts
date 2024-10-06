@@ -1,6 +1,7 @@
 import { Metadata, Recipe, User } from '../../../../graphql/models';
 import { IContext } from '../../../../context/types';
 import throwCustomError, { ErrorTypes } from '../../../../helpers/error-handler.helper';
+import { ICreateRecipe } from './types';
 
 export const createRecipe = async (
   _: any,
@@ -18,21 +19,7 @@ export const createRecipe = async (
       servings,
       youtubeLink,
     },
-  }: {
-    recipeCreateInput: {
-      title: string;
-      description: string;
-      ingredients: any[];
-      preparationSteps: any[];
-      category: { value: string };
-      imgSrc: string;
-      labels: { value: string }[];
-      cookingTime: number;
-      difficultyLevel: { value: string };
-      servings: number;
-      youtubeLink: string;
-    };
-  },
+  }: ICreateRecipe,
   context: IContext,
 ) => {
   if (
