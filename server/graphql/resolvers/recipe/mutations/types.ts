@@ -20,3 +20,7 @@ export interface IEditRecipe {
   id: string;
   recipeEditInput: IRecipeInput;
 }
+
+export interface IDeleteRecipe {
+  id: string;
+}
