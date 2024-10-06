@@ -13,6 +13,8 @@ import { loadSchema } from '@graphql-tools/load';
 import resolvers from './server/graphql/resolvers/index.js';
 import context from './server/context/index.js';
 
+import { limiter } from './server/config/rateLimit';
+
 dotenv.config();
 
 const MONGO_DB = process.env.MONGO_URI;
@@ -29,6 +31,8 @@ const server = new ApolloServer({
   resolvers,
   plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
 });
+
+app.use(limiter);
 
 await server.start();
 
