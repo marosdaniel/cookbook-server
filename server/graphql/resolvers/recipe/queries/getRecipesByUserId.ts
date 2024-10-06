@@ -1,6 +1,7 @@
 import { IContext } from '../../../../context/types';
 import { Recipe } from '../../../models/Recipe';
 import { Rating } from '../../../models/Rating';
+import { getRatingsStats } from '../../rating/utils';
 import { IGetRecipesByUserId } from './types';
 
 export const getRecipesByUserId = async (_: any, { userId, limit }: IGetRecipesByUserId, context: IContext) => {
@@ -16,18 +17,9 @@ export const getRecipesByUserId = async (_: any, { userId, limit }: IGetRecipesB
 
   const recipesWithRatings = await Promise.all(
     recipes.map(async recipe => {
-      const ratings = await Rating.find({ recipeId: recipe._id });
+      const { averageRating, ratingsCount } = await getRatingsStats(recipe._id.toString());
 
-      let averageRating = 0.0;
-      let ratingsCount = 0;
       let userRating = null;
-
-      if (ratings.length > 0) {
-        ratingsCount = ratings.length;
-        const totalRating = ratings.reduce((sum, rating) => sum + rating.ratingValue, 0);
-        averageRating = totalRating / ratingsCount;
-      }
-
       if (loggedInUserId) {
         const userRatingRecord = await Rating.findOne({
           recipeId: recipe._id,

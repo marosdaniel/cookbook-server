@@ -139,4 +139,5 @@ type Mutation {
   deleteRecipe(id: ID!): Boolean! # true if  something was deleted, false if the id was not found or deleted
   deleteAllRecipes: Int! # number of deleted recipes
   rateRecipe(ratingInput: RatingInput!): Recipe!
+  deleteRating(recipeId: ID!): Boolean! # true if  something was deleted, false if the id was not found or deleted
 }

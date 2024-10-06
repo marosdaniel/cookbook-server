@@ -1,5 +1,6 @@
 import { Recipe, Rating } from '../../../models';
 import { IContext } from '../../../../context/types';
+import { getRatingsStats } from '../../rating/utils';
 import { IGetRecipes } from './types';
 
 export const getRecipes = async (_: any, { limit }: IGetRecipes, context: IContext) => {
@@ -15,18 +16,9 @@ export const getRecipes = async (_: any, { limit }: IGetRecipes, context: IConte
 
   const recipesWithRatings = await Promise.all(
     recipes.map(async recipe => {
-      const ratings = await Rating.find({ recipeId: recipe._id });
+      const { averageRating, ratingsCount } = await getRatingsStats(recipe._id.toString());
 
-      let averageRating = 0.0;
-      let ratingsCount = 0;
       let userRating = null;
-
-      if (ratings.length > 0) {
-        ratingsCount = ratings.length;
-        const totalRating = ratings.reduce((sum, rating) => sum + rating.ratingValue, 0);
-        averageRating = totalRating / ratingsCount;
-      }
-
       if (userId) {
         const userRatingRecord = await Rating.findOne({
           recipeId: recipe._id,
