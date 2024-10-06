@@ -1,5 +1,5 @@
 import { IContext } from '../../../../context/types';
-import { User, Recipe } from '../../../../graphql/models';
+import { User, Recipe, Rating } from '../../../../graphql/models'; // Rating modell importálása
 import throwCustomError, { ErrorTypes } from '../../../../helpers/error-handler.helper';
 import { IDeleteRecipe } from './types';
 
@@ -13,6 +13,8 @@ export const deleteRecipe = async (_: any, { id }: IDeleteRecipe, context: ICont
   if (wasDeleted.deletedCount === 0) {
     throw new Error('Recipe not found');
   }
+
+  await Rating.deleteMany({ recipeId: id });
 
   await User.updateMany({}, { $pull: { favoriteRecipes: id } });
 

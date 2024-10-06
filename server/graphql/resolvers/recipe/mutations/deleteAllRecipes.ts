@@ -1,6 +1,6 @@
 import { EUserRoles } from '../../../../graphql/models/User';
 import { IContext } from '../../../../context/types';
-import { User, Recipe, Metadata } from '../../../../graphql/models';
+import { User, Recipe, Rating } from '../../../../graphql/models'; // Rating modell importálása
 import throwCustomError, { ErrorTypes } from '../../../../helpers/error-handler.helper';
 
 export const deleteAllRecipes = async (_: any, __: {}, context: IContext) => {
@@ -14,5 +14,10 @@ export const deleteAllRecipes = async (_: any, __: {}, context: IContext) => {
   }
 
   const res = await Recipe.deleteMany({});
+
+  await Rating.deleteMany({});
+
+  await User.updateMany({}, { $set: { favoriteRecipes: [] } });
+
   return res.deletedCount;
 };
