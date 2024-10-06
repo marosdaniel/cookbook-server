@@ -11,10 +11,11 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { loadSchema } from '@graphql-tools/load';
 
-import resolvers from './server/graphql/resolvers/index.js';
-import context from './server/context/index.js';
+import resolvers from './server/graphql/resolvers';
+import context from './server/context/';
 
 import { limiter } from './server/config/rateLimit';
+import { helmetConfig } from './server/config/helmetConfig';
 
 dotenv.config();
 
@@ -36,37 +37,17 @@ const server = new ApolloServer({
 
 await server.start();
 
-// app.use(
-//   helmet({
-//     contentSecurityPolicy: {
-//       directives: {
-//         defaultSrc: ["'self'"],
-//         connectSrc: [
-//           "'self'",
-//           'http://localhost:3000',
-//           'http://localhost:8080',
-//           'https://teal-light-gazelle.cyclic.app',
-//           'https://cookbook-client-sepia.vercel.app',
-//           'https://studio.apollographql.com',
-//           'https://cookbook-server-drab.vercel.app',
-//           'http://localhost:5173',
-//           'https://cookbook-vite.vercel.app',
-//         ],
-//         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-//       },
-//     },
-//   }),
-// );
+app.use(helmet(helmetConfig));
+
 app.use(
   cors<cors.CorsRequest>({
     origin: [
       'http://localhost:3000',
+      'http://localhost:5173',
       'https://teal-light-gazelle.cyclic.app',
       'https://cookbook-client-sepia.vercel.app',
       'https://studio.apollographql.com',
       'https://cookbook-server-drab.vercel.app',
-      'http://localhost:5173',
-      'https://cookbook-vite.vercel.app',
     ],
     methods: ['GET', 'POST'],
     credentials: true,
