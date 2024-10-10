@@ -1,6 +1,6 @@
 import { Rating, Recipe } from '../../../../graphql/models';
 import { IContext } from '../../../../context/types';
-import throwCustomError, { ErrorTypes } from '../../../../helpers/error-handler.helper';
+import { throwCustomError, ErrorTypes } from '../../../../helpers/error-handler.helper';
 
 import { updateRecipeRatingStats } from '../utils';
 import { IDeleteRecipe } from './types';

@@ -1,6 +1,6 @@
 import { Metadata, Recipe, User } from '../../../../graphql/models';
 import { IContext } from '../../../../context/types';
-import throwCustomError, { ErrorTypes } from '../../../../helpers/error-handler.helper';
+import { throwCustomError, ErrorTypes } from '../../../../helpers/error-handler.helper';
 import { ICreateRecipe } from './types';
 
 export const createRecipe = async (

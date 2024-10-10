@@ -1,6 +1,6 @@
 import { IContext } from '../../../../context/types';
-import { User, Recipe, Rating } from '../../../../graphql/models'; // Rating modell importálása
-import throwCustomError, { ErrorTypes } from '../../../../helpers/error-handler.helper';
+import { User, Recipe, Rating } from '../../../../graphql/models';
+import { throwCustomError, ErrorTypes } from '../../../../helpers/error-handler.helper';
 import { IDeleteRecipe } from './types';
 
 export const deleteRecipe = async (_: any, { id }: IDeleteRecipe, context: IContext) => {

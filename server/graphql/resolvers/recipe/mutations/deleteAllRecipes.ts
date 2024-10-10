@@ -1,7 +1,7 @@
 import { EUserRoles } from '../../../../graphql/models/User';
 import { IContext } from '../../../../context/types';
-import { User, Recipe, Rating } from '../../../../graphql/models'; // Rating modell importálása
-import throwCustomError, { ErrorTypes } from '../../../../helpers/error-handler.helper';
+import { User, Recipe, Rating } from '../../../../graphql/models';
+import { throwCustomError, ErrorTypes } from '../../../../helpers/error-handler.helper';
 
 export const deleteAllRecipes = async (_: any, __: {}, context: IContext) => {
   const user = await User.findById(context._id);

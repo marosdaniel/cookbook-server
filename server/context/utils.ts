@@ -1,7 +1,7 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { EUserRoles, User } from '../../server/graphql/models/User';
 
-import throwCustomError, { ErrorTypes } from '../helpers/error-handler.helper';
+import { throwCustomError, ErrorTypes } from '../helpers/error-handler.helper';
 import operationsConfig from './operationsConfig';
 
 const getUserById = async (userId: string | JwtPayload) => {
