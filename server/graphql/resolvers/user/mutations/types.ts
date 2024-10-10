@@ -27,3 +27,12 @@ export interface IEditUserInput {
 export interface IRequestPasswordReset {
   email: string;
 }
+
+export interface IChangePassword {
+  id: string;
+  passwordEditInput: {
+    currentPassword: string;
+    newPassword: string;
+    confirmNewPassword: string;
+  };
+}

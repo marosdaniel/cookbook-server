@@ -1,12 +1,18 @@
 import bcrypt from 'bcrypt';
 import { GraphQLError } from 'graphql';
-import jwt from 'jsonwebtoken';
 import validator from 'validator';
 
-import { generateResetToken, sendPasswordResetEmail } from '../../helpers/email';
 import { Recipe, User } from '../models';
-import { TRequestPasswordReset } from './types';
-import { createUser, editUser, getAllUser, getUserById, getUserByUserName, loginUser } from './user';
+import {
+  changePassword,
+  createUser,
+  editUser,
+  getAllUser,
+  getUserById,
+  getUserByUserName,
+  loginUser,
+  resetPassword,
+} from './user';
 
 const userResolvers = {
   Query: {
@@ -18,58 +24,8 @@ const userResolvers = {
     createUser,
     loginUser,
     editUser,
-    // CHANGE PASSWORD
-    async changePassword(_, { id, passwordEditInput }) {
-      const { currentPassword, newPassword, confirmNewPassword } = passwordEditInput;
-
-      const user = await User.findById(id).populate('favoriteRecipes').populate('recipes');
-
-      if (!user) {
-        throw new GraphQLError('User not found.', {
-          extensions: {
-            code: 401,
-          },
-        });
-      }
-
-      if (!currentPassword || !newPassword || !confirmNewPassword) {
-        throw new Error('Please fill in all fields');
-      }
-
-      if (newPassword !== confirmNewPassword) {
-        throw new Error('Passwords do not match');
-      }
-
-      const isMatch = await bcrypt.compare(currentPassword, user.password);
-      if (!isMatch) {
-        throw new Error('Invalid password');
-      }
-
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-      user.password = hashedPassword;
-      await user.save();
-
-      return true;
-    },
-    // RESET PASSWORD
-    resetPassword: async (_, { email }: TRequestPasswordReset) => {
-      const user = await User.findOne({ email });
-      if (!user) {
-        throw new Error('User not found');
-      }
-
-      const resetToken = generateResetToken();
-      const resetExpires = new Date();
-      resetExpires.setHours(resetExpires.getHours() + 1);
-
-      user.resetPasswordToken = resetToken;
-      user.resetPasswordExpires = resetExpires;
-      await user.save();
-
-      sendPasswordResetEmail(user.email, user.resetPasswordToken);
-
-      return true;
-    },
+    changePassword,
+    resetPassword,
     // SET NEW PASSWORD
     setNewPassword: async (_, { token, newPassword }) => {
       const user = await User.findOne({
