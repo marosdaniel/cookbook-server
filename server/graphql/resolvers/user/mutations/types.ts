@@ -45,3 +45,8 @@ export interface ISetNewPassword {
   token: string;
   newPassword: string;
 }
+
+export interface IAddToFavoriteRecipes {
+  userId: string;
+  recipeId: string;
+}

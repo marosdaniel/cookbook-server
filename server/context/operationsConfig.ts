@@ -25,6 +25,7 @@ const authenticatedOperations = [
   'deleteUser',
   'editUser',
   'changePassword',
+  'getFavoriteRecipes',
   'addToFavoriteRecipes',
   'removeFromFavoriteRecipes',
   'getMetadataByKey',
@@ -42,6 +43,7 @@ const adminOperations = [
   'createMetadata',
   'deleteMetadata',
   'getAllUser',
+  'cleanUserRecipes',
 ];
 
 const operationsConfig = {

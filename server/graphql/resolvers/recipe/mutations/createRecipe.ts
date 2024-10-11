@@ -22,6 +22,10 @@ export const createRecipe = async (
   }: ICreateRecipe,
   context: IContext,
 ) => {
+  if (!context || !context._id) {
+    throwCustomError('Unauthenticated operation - no user found', ErrorTypes.UNAUTHENTICATED);
+  }
+
   if (
     !title ||
     !description ||
@@ -38,14 +42,16 @@ export const createRecipe = async (
   try {
     const user = await User.findById(context._id);
     if (!user) {
-      throwCustomError('Unauthenticated operation - no user found', ErrorTypes.UNAUTHENTICATED);
+      throwCustomError('User not found', ErrorTypes.UNAUTHENTICATED);
     }
 
     const labelsFromDb = await Metadata.find({ key: { $in: labels.map(label => label.value) } });
     const categoryFromDb = await Metadata.findOne({ key: category.value });
     const difficultyLevelFromDb = await Metadata.findOne({ key: difficultyLevel.value });
 
-    const newDate = new Date().toISOString();
+    if (!categoryFromDb || !difficultyLevelFromDb) {
+      throwCustomError('Invalid category or difficulty level', ErrorTypes.BAD_REQUEST);
+    }
 
     const newRecipe = new Recipe({
       title,
@@ -53,8 +59,8 @@ export const createRecipe = async (
       ingredients,
       preparationSteps,
       createdBy: user.userName,
-      createdAt: newDate,
-      updatedAt: newDate,
+      createdAt: new Date(),
+      updatedAt: new Date(),
       category: categoryFromDb,
       imgSrc,
       labels: labelsFromDb,
@@ -68,11 +74,11 @@ export const createRecipe = async (
 
     const res = await newRecipe.save();
 
-    user.recipes.push(res);
+    user.recipes.push(res._id);
     await user.save();
 
     return res;
   } catch (error) {
-    throw new Error(error);
+    throwCustomError('Failed to create recipe', ErrorTypes.INTERNAL_SERVER_ERROR);
   }
 };

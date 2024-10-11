@@ -9,6 +9,7 @@ import {
   deleteRecipe,
   deleteAllRecipes,
 } from './recipe';
+import { getFavoriteRecipes } from './user';
 
 const recipeResolvers = {
   Query: {
@@ -17,16 +18,7 @@ const recipeResolvers = {
     getRecipes,
     getRecipesByUserName,
     getRecipesByUserId,
-    // async getFavoriteRecipes(_, { userId, limit }: { userId: string; limit: number }) {
-    //   const user = await User.findById(userId).populate({
-    //     path: 'favoriteRecipes',
-    //     options: { sort: { createdAt: -1 }, limit },
-    //   });
-    //   if (!user) {
-    //     throw new Error('User not found');
-    //   }
-    //   return user.favoriteRecipes;
-    // },
+    getFavoriteRecipes,
   },
   Mutation: {
     createRecipe,

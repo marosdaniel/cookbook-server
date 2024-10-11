@@ -1,5 +1,11 @@
 scalar DateTime
 
+type OperationResult {
+  success: Boolean!
+  message: String!
+  statusCode: Int
+}
+
 enum UserRole {
   ADMIN
   USER
@@ -57,6 +63,7 @@ type Query {
   getUserById(id: ID!): User!
   getUserByUserName(userName: String!): User!
   getAllUser: [User]!
+  getFavoriteRecipes(userId: ID!, limit: Int): [Recipe!]!
 }
 
 type Mutation {
@@ -71,6 +78,8 @@ type Mutation {
   deleteUser(id: ID!): Boolean!
   deleteAllUser: Int!
 
-  addToFavoriteRecipes(userId: ID!, recipeId: ID!): User!
-  removeFromFavoriteRecipes(userId: ID!, recipeId: ID!): User!
+  addToFavoriteRecipes(userId: ID!, recipeId: ID!): OperationResult!
+  removeFromFavoriteRecipes(userId: ID!, recipeId: ID!): OperationResult!
+
+  cleanUserRecipes(userId: ID!): Boolean!
 }
