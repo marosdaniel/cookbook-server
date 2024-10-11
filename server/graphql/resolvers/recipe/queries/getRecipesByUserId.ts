@@ -1,6 +1,7 @@
 import { IContext } from '../../../../context/types';
 import { Recipe } from '../../../models/Recipe';
 import { Rating } from '../../../models/Rating';
+import { User } from '../../../models/User';
 import { getRatingsStats } from '../../rating/utils';
 import { IGetRecipesByUserId } from './types';
 
@@ -15,7 +16,15 @@ export const getRecipesByUserId = async (_: any, { userId, limit }: IGetRecipesB
 
   const loggedInUserId = context._id;
 
-  const recipesWithRatings = await Promise.all(
+  let favoriteRecipesIds: string[] = [];
+  if (loggedInUserId) {
+    const loggedInUser = await User.findById(loggedInUserId).select('favoriteRecipes').lean();
+    if (loggedInUser) {
+      favoriteRecipesIds = loggedInUser.favoriteRecipes.map(favRecipeId => favRecipeId.toString());
+    }
+  }
+
+  const recipesWithRatingsAndFavorites = await Promise.all(
     recipes.map(async recipe => {
       const { averageRating, ratingsCount } = await getRatingsStats(recipe._id.toString());
 
@@ -31,14 +40,17 @@ export const getRecipesByUserId = async (_: any, { userId, limit }: IGetRecipesB
         }
       }
 
+      const isFavorite = favoriteRecipesIds.includes(recipe._id.toString());
+
       return {
         ...recipe,
         averageRating,
         ratingsCount,
         userRating,
+        isFavorite,
       };
     }),
   );
 
-  return { recipes: recipesWithRatings, totalRecipes };
+  return { recipes: recipesWithRatingsAndFavorites, totalRecipes };
 };
