@@ -4,11 +4,23 @@ import { EUserRoles } from '../../../../graphql/models/User';
 import { User } from '../../../../graphql/models';
 import { IUserRegisterInput } from './types';
 import { throwCustomError } from '../../../../helpers/error-handler.helper';
+import { IContext } from '../../../../context/types';
 
 export const createUser = async (
   _: any,
   { userRegisterInput: { firstName, lastName, userName, email, password } }: IUserRegisterInput,
+  context: IContext,
 ) => {
+  const currentUser = context;
+
+  // Ha van bejelentkezett felhasználó és nem admin, visszadobunk egy hibát
+  if (currentUser) {
+    throwCustomError('Unauthorized operation - insufficient permissions', {
+      errorCode: 'UNAUTHORIZED',
+      errorStatus: 403,
+    });
+  }
+
   if (!firstName || !lastName || !userName || !email || !password) {
     throwCustomError('Please fill in all fields', { errorCode: 'INVALID_INPUT', errorStatus: 400 });
   }

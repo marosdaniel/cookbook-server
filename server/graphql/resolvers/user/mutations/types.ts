@@ -36,3 +36,12 @@ export interface IChangePassword {
     confirmNewPassword: string;
   };
 }
+
+export interface IDeleteUser {
+  id: string;
+}
+
+export interface ISetNewPassword {
+  token: string;
+  newPassword: string;
+}

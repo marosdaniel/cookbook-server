@@ -14,6 +14,7 @@ const publicOperations = [
   'resetPassword',
   'setNewPassword',
   'getRatingsByRecipe',
+  'getAllUser',
 ];
 
 const authenticatedOperations = [

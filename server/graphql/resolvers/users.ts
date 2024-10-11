@@ -6,12 +6,14 @@ import { Recipe, User } from '../models';
 import {
   changePassword,
   createUser,
+  deleteUser,
   editUser,
   getAllUser,
   getUserById,
   getUserByUserName,
   loginUser,
   resetPassword,
+  setNewPassword,
 } from './user';
 
 const userResolvers = {
@@ -26,38 +28,8 @@ const userResolvers = {
     editUser,
     changePassword,
     resetPassword,
-    // SET NEW PASSWORD
-    setNewPassword: async (_, { token, newPassword }) => {
-      const user = await User.findOne({
-        resetPasswordToken: token,
-        resetPasswordExpires: { $gt: Date.now() },
-      });
-      if (!user) {
-        throw new Error('Invalid or expired reset token');
-      }
-
-      if (!validator.isLength(newPassword, { min: 5, max: 20 })) {
-        throw new Error('Password must be at least 5, maximum 20 characters');
-      }
-      const hashedPassword = await bcrypt.hash(newPassword, 10);
-      user.password = hashedPassword;
-      user.resetPasswordToken = undefined;
-      user.resetPasswordExpires = undefined;
-      await user.save();
-      return true;
-    },
-    // DELETE USER
-    async deleteUser(_, { id }) {
-      const wasDeleted = await User.deleteOne({ _id: id });
-      if (!wasDeleted) {
-        throw new GraphQLError('User not found.', {
-          extensions: {
-            code: 401,
-          },
-        });
-      }
-      return wasDeleted.deletedCount; // 1 if deleted, 0 if not
-    },
+    setNewPassword,
+    deleteUser,
     // DELETE ALL USERS
     async deleteAllUser() {
       const res = await User.deleteMany({});

@@ -7,3 +7,4 @@ export * from './deleteAllUser';
 export * from './addToFavoriteRecipes';
 export * from './removeFromFavoriteRecipes';
 export * from './resetPassword';
+export * from './setNewPassword';
