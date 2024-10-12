@@ -18,6 +18,22 @@ export const addToFavoriteRecipes = async (
     });
   }
 
+  if (!Types.ObjectId.isValid(userId)) {
+    return {
+      success: false,
+      message: 'Invalid userId format',
+      statusCode: 400,
+    };
+  }
+
+  if (!Types.ObjectId.isValid(recipeId)) {
+    return {
+      success: false,
+      message: 'Invalid recipeId format',
+      statusCode: 400,
+    };
+  }
+
   const user = await User.findById(new Types.ObjectId(userId));
   if (!user) {
     return {

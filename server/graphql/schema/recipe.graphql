@@ -89,7 +89,7 @@ type Recipe {
   averageRating: Float!
   ratingsCount: Int!
   userRating: Float
-  isFavorite: Boolean!
+  isFavorite: Boolean
 }
 
 input RecipeCreateInput {

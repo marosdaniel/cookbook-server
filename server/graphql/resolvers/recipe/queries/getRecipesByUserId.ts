@@ -19,7 +19,7 @@ export const getRecipesByUserId = async (_: any, { userId, limit }: IGetRecipesB
   let favoriteRecipesIds: string[] = [];
   if (loggedInUserId) {
     const loggedInUser = await User.findById(loggedInUserId).select('favoriteRecipes').lean();
-    if (loggedInUser) {
+    if (loggedInUser && loggedInUser.favoriteRecipes) {
       favoriteRecipesIds = loggedInUser.favoriteRecipes.map(favRecipeId => favRecipeId.toString());
     }
   }

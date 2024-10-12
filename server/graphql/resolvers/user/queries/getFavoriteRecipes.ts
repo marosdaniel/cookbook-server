@@ -32,7 +32,13 @@ export const getFavoriteRecipes = async (
     _id: { $in: user.favoriteRecipes },
   })
     .sort({ createdAt: -1 })
-    .limit(limit);
+    .limit(limit)
+    .lean();
 
-  return favoriteRecipes;
+  const favoriteRecipesWithIsFavorite = favoriteRecipes.map(recipe => ({
+    ...recipe,
+    isFavorite: true,
+  }));
+
+  return favoriteRecipesWithIsFavorite;
 };

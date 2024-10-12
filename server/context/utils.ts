@@ -22,7 +22,9 @@ export const getUser = async (token: string, operationDefinition: string) => {
       throwCustomError('User is not authenticated', ErrorTypes.UNAUTHENTICATED);
     }
 
-    const user = jwt.verify(token, process.env.JWT_PRIVATE_KEY);
+    const jwtToken = token.startsWith('Bearer ') ? token.slice(7) : token;
+
+    const user = jwt.verify(jwtToken, process.env.JWT_PRIVATE_KEY);
     if (!user) {
       throwCustomError('User is not authenticated', ErrorTypes.UNAUTHENTICATED);
     }

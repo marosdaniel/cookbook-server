@@ -15,9 +15,10 @@ export const getRecipes = async (_: any, { limit }: IGetRecipes, context: IConte
   const userId = context._id;
 
   let favoriteRecipesIds: string[] = [];
+
   if (userId) {
     const loggedInUser = await User.findById(userId).select('favoriteRecipes').lean();
-    if (loggedInUser) {
+    if (loggedInUser && loggedInUser.favoriteRecipes) {
       favoriteRecipesIds = loggedInUser.favoriteRecipes.map(favRecipeId => favRecipeId.toString());
     }
   }

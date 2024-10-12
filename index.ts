@@ -12,10 +12,10 @@ import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
 import { loadSchema } from '@graphql-tools/load';
 
 import resolvers from './server/graphql/resolvers';
-import context from './server/context/';
 
 import { limiter } from './server/config/rateLimit';
 import { helmetConfig } from './server/config/helmetConfig';
+import context from './server/context';
 
 dotenv.config();
 
@@ -59,7 +59,10 @@ app.use(limiter);
 app.use(
   bodyParser.json({ limit: '50mb' }),
   expressMiddleware(server, {
-    context,
+    context: async ({ req }) => {
+      const ctx = await context({ req });
+      return ctx;
+    },
   }),
 );
 

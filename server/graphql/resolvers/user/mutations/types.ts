@@ -50,3 +50,8 @@ export interface IAddToFavoriteRecipes {
   userId: string;
   recipeId: string;
 }
+
+export interface IRemoveFromFavoriteRecipes {
+  userId: string;
+  recipeId: string;
+}

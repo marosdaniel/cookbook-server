@@ -3,10 +3,11 @@ import { User, Recipe } from '../../../../graphql/models';
 import { throwCustomError } from '../../../../helpers/error-handler.helper';
 import { IContext } from '../../../../context/types';
 import { IOperationResult } from '../../types';
+import { IRemoveFromFavoriteRecipes } from './types';
 
 export const removeFromFavoriteRecipes = async (
   _: any,
-  { userId, recipeId }: { userId: string; recipeId: string },
+  { userId, recipeId }: IRemoveFromFavoriteRecipes,
   context: IContext,
 ): Promise<IOperationResult> => {
   const currentUser = context;
@@ -16,6 +17,22 @@ export const removeFromFavoriteRecipes = async (
       errorCode: 'UNAUTHORIZED',
       errorStatus: 403,
     });
+  }
+
+  if (!Types.ObjectId.isValid(userId)) {
+    return {
+      success: false,
+      message: 'Invalid userId format',
+      statusCode: 400,
+    };
+  }
+
+  if (!Types.ObjectId.isValid(recipeId)) {
+    return {
+      success: false,
+      message: 'Invalid recipeId format',
+      statusCode: 400,
+    };
   }
 
   const user = await User.findById(new Types.ObjectId(userId));
