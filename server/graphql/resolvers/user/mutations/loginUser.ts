@@ -44,6 +44,11 @@ export const loginUser = async (_: any, { userLoginInput: { userNameOrEmail, pas
         _id: user._id.toString(),
         userName: user.userName,
         email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        createdAt: user.createdAt,
+        locale: user.locale,
       },
       userId: user._id.toString(),
     };
