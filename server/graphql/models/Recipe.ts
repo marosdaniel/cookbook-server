@@ -59,6 +59,7 @@ export interface IRecipe {
   labels?: TLabel[];
   servings: number;
   youtubeLink?: string;
+  isFavorite?: boolean;
 
   averageRating: number;
   ratingsCount: number;

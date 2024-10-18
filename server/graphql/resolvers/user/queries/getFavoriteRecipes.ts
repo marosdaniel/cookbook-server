@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { IRecipe } from '../../../../graphql/models/Recipe';
+import { IIngredient, IPreparationStep, IRecipe } from '../../../../graphql/models/Recipe';
 import { User, Recipe } from '../../../../graphql/models';
 import { throwCustomError } from '../../../../helpers/error-handler.helper';
 import { IContext } from '../../../../context/types';
@@ -38,6 +38,8 @@ export const getFavoriteRecipes = async (
   const favoriteRecipesWithIsFavorite = favoriteRecipes.map(recipe => ({
     ...recipe,
     isFavorite: true,
+    preparationSteps: recipe.preparationSteps as IPreparationStep[],
+    ingredients: recipe.ingredients as IIngredient[],
   }));
 
   return favoriteRecipesWithIsFavorite;
