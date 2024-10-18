@@ -1,5 +1,10 @@
 scalar DateTime
 
+type BaseResponse {
+  success: Boolean
+  message: String
+}
+
 type OperationResult {
   success: Boolean!
   message: String!
@@ -72,8 +77,8 @@ type Mutation {
   editUser(id: ID!, userEditInput: UserEditInput!): User!
 
   changePassword(id: ID!, passwordEditInput: PasswordEditInput!): Boolean!
-  resetPassword(email: String!): Boolean!
-  setNewPassword(token: String!, newPassword: String!): Boolean!
+  resetPassword(email: String!): BaseResponse!
+  setNewPassword(token: String!, newPassword: String!): BaseResponse!
 
   deleteUser(id: ID!): Boolean!
   deleteAllUser: Int!
