@@ -39,18 +39,26 @@ await server.start();
 
 app.use(helmet(helmetConfig));
 
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'https://teal-light-gazelle.cyclic.app',
+  'https://cookbook-client-sepia.vercel.app',
+  'https://studio.apollographql.com',
+  'https://cookbook-server-drab.vercel.app',
+  'https://cookbook-vite.vercel.app',
+];
+
 app.use(
-  cors<cors.CorsRequest>({
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:5173',
-      'https://teal-light-gazelle.cyclic.app',
-      'https://cookbook-client-sepia.vercel.app',
-      'https://studio.apollographql.com',
-      'https://cookbook-server-drab.vercel.app',
-      'https://cookbook-vite.vercel.app',
-    ],
-    methods: ['GET', 'POST'],
+  cors({
+    origin: function (origin, callback) {
+      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        callback(null, origin);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ['GET', 'POST', 'OPTIONS'],
     credentials: true,
   }),
 );
