@@ -48,6 +48,7 @@ app.use(
       'https://cookbook-client-sepia.vercel.app',
       'https://studio.apollographql.com',
       'https://cookbook-server-drab.vercel.app',
+      'https://cookbook-vite.vercel.app',
     ],
     methods: ['GET', 'POST'],
     credentials: true,
