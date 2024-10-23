@@ -42,6 +42,7 @@ app.use(helmet(helmetConfig));
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
+  'http://localhost:8080', // for graphql playground
   'https://teal-light-gazelle.cyclic.app',
   'https://cookbook-client-sepia.vercel.app',
   'https://studio.apollographql.com',
@@ -52,8 +53,12 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-        callback(null, origin);
+      const isDevelopment = process.env.NODE_ENV === 'development';
+
+      if (!origin && isDevelopment) {
+        callback(null, true);
+      } else if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
       }
