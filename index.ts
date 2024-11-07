@@ -5,16 +5,16 @@ import http from 'http';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import helmet from 'helmet';
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
-import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
-import { GraphQLFileLoader } from '@graphql-tools/graphql-file-loader';
-import { loadSchema } from '@graphql-tools/load';
+import {ApolloServer} from '@apollo/server';
+import {expressMiddleware} from '@apollo/server/express4';
+import {ApolloServerPluginDrainHttpServer} from '@apollo/server/plugin/drainHttpServer';
+import {GraphQLFileLoader} from '@graphql-tools/graphql-file-loader';
+import {loadSchema} from '@graphql-tools/load';
 
 import resolvers from './server/graphql/resolvers';
 
-import { limiter } from './server/config/rateLimit';
-import { helmetConfig } from './server/config/helmetConfig';
+import {limiter} from './server/config/rateLimit';
+import {helmetConfig} from './server/config/helmetConfig';
 import context from './server/context';
 
 dotenv.config();
@@ -74,8 +74,7 @@ app.use(
   bodyParser.json({ limit: '50mb' }),
   expressMiddleware(server, {
     context: async ({ req }) => {
-      const ctx = await context({ req });
-      return ctx;
+      return await context({req});
     },
   }),
 );
