@@ -27,9 +27,9 @@
   "homepage": "https://github.com/marosdaniel/cookbook-server#readme",
   "dependencies": {
     "@apollo/server": "^4.11.2",
-    "@graphql-tools/graphql-file-loader": "^8.0.3",
-    "@graphql-tools/load": "^8.0.4",
-    "@graphql-tools/merge": "^9.0.9",
+    "@graphql-tools/graphql-file-loader": "^8.0.4",
+    "@graphql-tools/load": "^8.0.5",
+    "@graphql-tools/merge": "^9.0.10",
     "apollo-server-core": "^3.13.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
@@ -47,8 +47,8 @@
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/jsonwebtoken": "^9.0.7",
-    "@types/node": "^22.9.0",
-    "@types/nodemailer": "^6.4.16",
+    "@types/node": "^22.9.3",
+    "@types/nodemailer": "^6.4.17",
     "@types/validator": "^13.12.2",
     "eslint": "^9.15.0",
     "eslint-config-prettier": "^9.1.0",
@@ -56,6 +56,6 @@
     "nodemon": "^3.1.7",
     "ts-node": "^10.9.2",
     "tsc-alias": "1.8.10",
-    "typescript": "^5.6.3"
+    "typescript": "^5.7.2"
   }
 }
